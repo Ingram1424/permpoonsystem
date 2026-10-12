@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% block title %}ข้อมูลโครงการ {{ active_project }} - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+                        <div id="subtab-general-info-view" class="subtab-panel active">
+                            <!-- Standard Project View Container -->
+                            <div id="standard-project-info-container">
+                                <!-- Project Actions Row (Compact, balanced and elegant) -->
+                                <div class="project-actions-panel" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 20px; background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px;">
+                                    <!-- Back to Portal Button -->
+                                    <button class="btn btn-outline btn-sm" id="btn-back-to-portal-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; cursor: pointer; transition: background 0.2s;">
+                                        <i class="fa-solid fa-arrow-left" style="color: #475569; font-size: 13px;"></i> ย้อนกลับหน้าเลือกโครงการ
+                                    </button>
+
+                                    <!-- Status Selector Box -->
+                                    <div class="action-card hide-customer" style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; font-weight: 700; color: var(--navy-dark); white-space: nowrap;">สถานะโครงการ:</span>
+                                        <select id="subnav-project-status-selector-inline" class="form-control" style="font-size: 12px; padding: 6px 12px; height: 36px; font-weight: 600; background-color: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; width: 180px;">
+                                            <option value="งานที่กำลังดำเนินการ">🟢 งานที่กำลังดำเนินการ</option>
+                                            <option value="งานที่ดำเนินการเสร็จแล้ว">✅ งานที่ดำเนินการเสร็จแล้ว</option>
+                                            <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">🔵 งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
+                                            <option value="งานที่รอเสนอราคา">🟠 งานที่รอเสนอราคา</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Status Badge for customer role -->
+                                    <div class="show-customer" style="display: none; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; font-weight: 700; color: var(--navy-dark);">สถานะโครงการ:</span>
+                                        <span id="subnav-status-badge-inline" style="font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: #dcfce7; color: #15803d;">กำลังดำเนินการ</span>
+                                    </div>
+
+                                    <!-- Spacer to push actions to the right if space allows -->
+                                    <div style="flex-grow: 1;"></div>
+
+                                    <!-- Action Buttons Group -->
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <!-- Edit Button -->
+                                        <button class="btn btn-outline btn-sm hide-accounting hide-customer" id="open-edit-project-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: #ffffff; border: 1px solid var(--border-color); color: var(--navy-dark); cursor: pointer; transition: background 0.2s;">
+                                            <i class="fa-solid fa-pen-to-square" style="color: var(--primary-blue); font-size: 13px;"></i> แก้ไข/ลบโครงการ
+                                        </button>
+                                        <!-- Share Link Button -->
+                                        <button class="btn btn-sm hide-accounting hide-customer" id="copy-share-link-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: linear-gradient(135deg, #0d9488, #0891b2); color: #fff; border: none; cursor: pointer; transition: opacity 0.2s;">
+                                            <i class="fa-solid fa-share-nodes" style="font-size: 13px;"></i> คัดลอกลิงก์แชร์
+                                        </button>
+                                        <!-- Export PDF Button -->
+                                        <button class="btn btn-sm" id="export-project-pdf-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: none; cursor: pointer; transition: opacity 0.2s;">
+                                            <i class="fa-solid fa-file-pdf" style="font-size: 13px;"></i> ส่งออก PDF รายงาน
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Project Info Card -->
+                                <div class="project-info-card" style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color);">
+                                        <i class="fa-solid fa-clipboard-list" style="font-size: 16px; color: var(--primary-blue);"></i>
+                                        <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--navy-dark);">ข้อมูลโครงการ</h4>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <!-- Row 1: รหัสโครงการ + ปีโครงการ -->
+                                        <div style="display: flex; align-items: center; gap: 10px; background: var(--bg-light); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <i class="fa-solid fa-hashtag" style="font-size: 14px; color: var(--primary-blue); width: 18px; text-align: center;"></i>
+                                            <div>
+                                                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">รหัสโครงการ</div>
+                                                <div id="detail-info-code" style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-top: 2px;">-</div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 10px; background: var(--bg-light); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <i class="fa-solid fa-calendar-days" style="font-size: 14px; color: #0d9488; width: 18px; text-align: center;"></i>
+                                            <div>
+                                                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">ปีโครงการ</div>
+                                                <div id="detail-info-year" style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-top: 2px;">-</div>
+                                            </div>
+                                        </div>
+                                        <!-- Row 2: ชื่องาน (full width) -->
+                                        <div style="grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 10px; background: var(--bg-light); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <i class="fa-solid fa-file-lines" style="font-size: 14px; color: #6366f1; width: 18px; text-align: center; margin-top: 2px;"></i>
+                                            <div>
+                                                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">ชื่องาน</div>
+                                                <div id="detail-info-name" style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-top: 2px; line-height: 1.5;">-</div>
+                                            </div>
+                                        </div>
+                                        <!-- Row 3: โรงพยาบาล + ผู้รับผิดชอบ -->
+                                        <div id="detail-info-hospital-card" style="display: flex; align-items: center; gap: 10px; background: var(--bg-light); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <i class="fa-solid fa-hospital" style="font-size: 14px; color: #e11d48; width: 18px; text-align: center;"></i>
+                                            <div>
+                                                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">ชื่อโรงพยาบาล</div>
+                                                <div id="detail-info-hospital" style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-top: 2px;">-</div>
+                                            </div>
+                                        </div>
+                                        <div class="hide-accounting" style="display: flex; align-items: center; gap: 10px; background: var(--bg-light); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <i class="fa-solid fa-user-tie" style="font-size: 14px; color: #f59e0b; width: 18px; text-align: center;"></i>
+                                            <div>
+                                                <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">ผู้รับผิดชอบโครงการ</div>
+                                                <div id="detail-info-manager" style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin-top: 2px;">-</div>
+                                            </div>
+                                        </div>
+                                        <!-- Row 4: ความคืบหน้า (full width with progress bar) -->
+                                        <div style="grid-column: 1 / -1; background: var(--bg-light); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                    <i class="fa-solid fa-chart-line" style="font-size: 14px; color: #10b981;"></i>
+                                                    <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">ความคืบหน้า (Actual Progress)</span>
+                                                </div>
+                                                <span id="detail-info-progress-text" style="font-size: 18px; font-weight: 800; color: #10b981;">0%</span>
+                                            </div>
+                                            <div style="width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                                <div id="detail-info-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 5px; transition: width 0.5s ease;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Project Access Permissions Management Card -->
+                                <div class="project-permissions-card hide-accounting hide-customer hide-pe hide-technician" style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-user-shield" style="font-size: 16px; color: var(--primary-blue);"></i>
+                                            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--navy-dark);">สิทธิ์การเข้าถึงโครงการนี้ (PE, ช่าง, ลูกค้า)</h4>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                            <!-- Select Existing User Dropdown with Search -->
+                                            <div style="position: relative; display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 4px; height: 32px; box-sizing: border-box;">
+                                                <input type="text" id="project-detail-user-search-input" placeholder="พิมพ์ค้นหาบัญชีผู้ใช้..." style="font-family: 'Prompt'; font-size: 11.5px; border: none; background: transparent; outline: none; width: 180px; font-weight: 600; color: var(--navy-dark); padding: 0 6px; height: 100%;" autocomplete="off">
+                                                <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #64748b; margin-right: 4px; cursor: pointer;" id="project-detail-user-search-chevron"></i>
+                                                
+                                                <!-- Dropdown List Container -->
+                                                <div id="project-detail-user-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--shadow-lg); z-index: 1000; max-height: 200px; overflow-y: auto; scrollbar-width: thin;">
+                                                    <!-- List items populated dynamically -->
+                                                </div>
+                                                
+                                                <button type="button" onclick="window.addExistingUserToProject()" style="background: var(--primary-blue); color: #fff; border: none; padding: 2px 10px; border-radius: 4px; font-family: 'Prompt'; font-size: 11px; font-weight: 700; cursor: pointer; height: 24px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; transition: opacity 0.15s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                                    <i class="fa-solid fa-user-check" style="margin-right: 4px; font-size: 10px;"></i>มอบสิทธิ์
+                                                </button>
+                                            </div>
+                                            <!-- Create New User Button -->
+                                            <button type="button" class="btn btn-xs btn-outline-blue" onclick="window.openCreateUserFromProjectDetail()" style="font-family: 'Prompt'; font-size: 11px; padding: 6px 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; border-radius: var(--radius-sm); border: 1px solid var(--primary-blue); background: #ffffff; color: var(--primary-blue); transition: all 0.2s; height: 32px; box-sizing: border-box;">
+                                                <i class="fa-solid fa-user-plus"></i> เจนบัญชีผู้ใช้ใหม่มอบสิทธิ์ทันที
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div style="overflow-x: auto; max-height: 250px; scrollbar-width: thin;">
+                                        <table class="transaction-table" style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                                            <thead style="position: sticky; top: 0; z-index: 2; background: #f8fafc; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                                <tr style="text-align: left; font-size: 11.5px; border-bottom: 1px solid var(--border-color);">
+                                                    <th style="padding: 8px; font-weight: 600; color: var(--text-muted);">ชื่อผู้ใช้ / บริษัท</th>
+                                                    <th style="padding: 8px; font-weight: 600; color: var(--text-muted);">Username</th>
+                                                    <th style="padding: 8px; font-weight: 600; color: var(--text-muted);">ประเภท (Role)</th>
+                                                    <th style="padding: 8px; font-weight: 600; color: var(--text-muted); text-align: center; width: 140px;">ช่องทางสิทธิ์</th>
+                                                    <th style="padding: 8px; font-weight: 600; color: var(--text-muted); text-align: center; width: 100px;">จัดการ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="project-detail-permissions-tbody">
+                                                <!-- Populated dynamically via JS -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Project charts -->
+                                <div class="project-charts-row">
+                                    <div class="chart-container-card hide-customer">
+                                        <h4 class="chart-title">สรุปค่าใช้จ่ายโครงการ</h4>
+                                        <div class="financial-summary-widget hide-customer">
+                                            <div class="fin-row">
+                                                <div class="fin-box">
+                                                    <span class="fin-lbl">ต้นทุนรวม</span>
+                                                    <span class="fin-val text-navy" id="detail-fin-cost">0</span>
+                                                    <span class="fin-unit">บาท</span>
+                                                </div>
+                                                <div class="fin-box hide-pm">
+                                                    <span class="fin-lbl">กำไร</span>
+                                                    <span class="fin-val text-green" id="detail-fin-profit">0</span>
+                                                    <span class="fin-unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="fin-row mt-2">
+                                                <div class="fin-box">
+                                                    <span class="fin-lbl">ขาดทุน</span>
+                                                    <span class="fin-val text-muted" id="detail-fin-loss">-</span>
+                                                    <span class="fin-unit">บาท</span>
+                                                </div>
+                                                <div class="fin-box highlighted-profit hide-pm">
+                                                    <span class="fin-lbl">กำไรสุทธิ</span>
+                                                    <span class="fin-val text-orange" id="detail-fin-netprofit">0</span>
+                                                    <span class="fin-unit">บาท</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="only-customer text-center py-4 text-muted font-sm">
+                                            <i class="fa-solid fa-eye-slash mb-2 fs-4"></i>
+                                            <p>ไม่ได้รับสิทธิ์ให้เห็นข้อมูลต้นทุนและค่าใช้จ่าย</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quoting Storage Container (Only for งานที่กำลังเสนอราคา) -->
+                            <div id="quoting-project-info-container" style="display: none;">
+                                <!-- Quoting Summary Card -->
+                                <div style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+                                        <div>
+                                            <span style="font-size: 11px; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 0.5px;">
+                                                <i class="fa-solid fa-file-invoice mr-1"></i> ข้อมูลรายการเสนอราคาที่เลือก
+                                            </span>
+                                            <h3 id="quoting-detail-name" style="font-size: 18px; font-weight: 700; color: var(--navy-dark); margin-top: 4px;">-</h3>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <span id="quoting-detail-hospital-badge" style="padding: 4px 12px; background: #eff6ff; color: var(--primary-blue); border: 1px solid #bfdbfe; border-radius: 20px; font-size: 12px; font-weight: 600;">-</span>
+                                            <span id="quoting-detail-status-badge" style="padding: 4px 12px; background: #dcfce7; color: #15803d; border-radius: 20px; font-size: 12px; font-weight: 700;">🟢 งานที่กำลังเสนอราคา</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 3 Core Fields Summary Grid -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                                        <!-- Field 1: ชื่องาน -->
+                                        <div style="background: var(--bg-light); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;"><i class="fa-solid fa-heading text-blue mr-1"></i> ชื่องาน</div>
+                                            <div id="quoting-summary-name" style="font-size: 13.5px; font-weight: 700; color: var(--navy-dark); line-height: 1.4;">-</div>
+                                        </div>
+                                        
+                                        <!-- Field 2: ระบุโรงพยาบาล -->
+                                        <div style="background: var(--bg-light); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;"><i class="fa-solid fa-hospital text-teal mr-1"></i> ระบุโรงพยาบาล</div>
+                                            <div id="quoting-summary-hospital" style="font-size: 13.5px; font-weight: 700; color: var(--navy-dark);">-</div>
+                                        </div>
+                                        
+                                        <!-- Field 3: ความคืบหน้า (%) -->
+                                        <div style="background: var(--bg-light); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                                <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;"><i class="fa-solid fa-chart-line text-green mr-1"></i> ความคืบหน้า (%)</span>
+                                                <strong id="quoting-summary-progress-text" style="font-size: 14px; font-weight: 800; color: #059669;">0%</strong>
+                                            </div>
+                                            <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                <div id="quoting-summary-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 4px; transition: width 0.4s ease;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Data Table of All Quoting Records -->
+                                <div style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                                        <div>
+                                            <h4 style="font-size: 14px; font-weight: 700; color: var(--navy-dark); margin: 0;">
+                                                <i class="fa-solid fa-database text-green mr-1"></i> คลังบันทึกข้อมูลงานที่กำลังเสนอราคา (Quotation Data Storage)
+                                            </h4>
+                                            <span style="font-size: 11px; color: var(--text-muted);">บันทึกข้อมูลชื่องาน โรงพยาบาล และความคืบหน้า</span>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary" onclick="document.getElementById('sidebar-create-project-btn').click()" style="font-size: 11.5px; padding: 6px 12px;">
+                                            <i class="fa-solid fa-plus-circle"></i> เพิ่มรายการเสนอราคา
+                                        </button>
+                                    </div>
+
+                                    <div style="overflow-x: auto;">
+                                        <table class="table" style="width: 100%; font-size: 12px;">
+                                            <thead>
+                                                <tr style="background: var(--bg-light); border-bottom: 1px solid var(--border-color);">
+                                                    <th style="padding: 10px 12px; width: 60px; text-align: center;">ลำดับ</th>
+                                                    <th style="padding: 10px 12px; width: 120px;">วันที่ไปดูงาน</th>
+                                                    <th style="padding: 10px 12px; width: 140px;">เลขที่ใบเสนอราคา</th>
+                                                    <th style="padding: 10px 12px;">ชื่องาน</th>
+                                                    <th style="padding: 10px 12px; width: 125px; text-align: center;">BOQ</th>
+                                                    <th style="padding: 10px 12px; width: 95px; text-align: center;">คู่เทียบ 1</th>
+                                                    <th style="padding: 10px 12px; width: 95px; text-align: center;">คู่เทียบ 2</th>
+                                                    <th style="padding: 10px 12px; width: 180px;">หมายเหตุ</th>
+                                                    <th style="padding: 10px 12px; width: 90px; text-align: center;">จัดการ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="quoting-storage-table-body">
+                                                <!-- Populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+{% endblock %}

@@ -1,0 +1,796 @@
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-cloud-arrow-up"></i> อัปโหลดเอกสารสำคัญ</h3>
+                <button class="modal-close-btn" id="close-upload-modal">&times;</button>
+            </div>
+            <form id="upload-doc-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="doc-file" class="form-label">เลือกไฟล์เอกสาร <span class="required">*</span></label>
+                        <input type="file" id="doc-file" class="form-control" style="padding: 5px; height: auto;" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doc-name" class="form-label">ชื่อเอกสารอ้างอิง</label>
+                        <input type="text" id="doc-name" class="form-control" placeholder="ชื่อเอกสารจะถูกเติมอัตโนมัติตามชื่อไฟล์ที่เลือก" required>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="doc-type" class="form-label">ประเภทเอกสาร <span class="required">*</span></label>
+                            <select id="doc-type" class="form-control" required>
+                                <option value="PO">PO</option>
+                                <option value="BOQ">BOQ</option>
+                                <option value="Contract">สัญญา</option>
+                                <option value="Drawings">แบบแปลน</option>
+                                <option value="Others">อื่นๆ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc-date" class="form-label">วันที่เอกสาร <span class="required">*</span></label>
+                            <input type="date" id="doc-date" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-upload-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกเอกสาร</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Media Upload Modal -->
+    <div class="modal-overlay" id="media-upload-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-cloud-arrow-up"></i> อัปโหลดรูปภาพ / ไฟล์</h3>
+                <button class="modal-close-btn" id="close-media-modal">&times;</button>
+            </div>
+            <form id="media-upload-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="media-file">เลือกไฟล์รูปภาพ</label>
+                        <input type="file" id="media-file" class="form-control" accept="image/*" multiple required style="padding: 6px 12px; height: auto;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-media">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">อัปโหลด</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal-overlay" id="expense-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-receipt"></i> บันทึกค่าใช้จ่ายใหม่</h3>
+                <button class="modal-close-btn" id="close-expense-modal">&times;</button>
+            </div>
+            <form id="add-expense-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exp-title" class="form-label">รายการค่าใช้จ่าย <span class="required">*</span></label>
+                        <input type="text" id="exp-title" class="form-control" placeholder="เช่น ซื้อวัสดุแผ่นยิปซั่มงวดแรก" required>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="exp-type" class="form-label">ประเภท <span class="required">*</span></label>
+                            <select id="exp-type" class="form-control" required>
+                                <option value="ค่าแรง">ค่าแรง</option>
+                                <option value="ค่าวัสดุ">ค่าวัสดุ</option>
+                                <option value="ค่าใช้จ่ายอื่น">ค่าใช้จ่ายอื่น</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exp-amount" class="form-label">จำนวนเงิน (บาท) <span class="required">*</span></label>
+                            <input type="number" id="exp-amount" class="form-control" min="1" step="any" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exp-date" class="form-label">วันที่บันทึก <span class="required">*</span></label>
+                            <input type="date" id="exp-date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="exp-file" class="form-label">อัปโหลดเอกสารอ้างอิง (เช่น ใบเสนอราคา / ใบเสร็จ / บิลเงินสด)</label>
+                        <input type="file" id="exp-file" class="form-control" accept=".pdf,.png,.jpg,.jpeg,.xls,.xlsx,.csv" style="padding: 6px 12px; height: auto;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-expense-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกรายการ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Daily Report Modal -->
+    <div class="modal-overlay" id="daily-report-modal">
+        <div class="modal-card" style="max-width: 650px; width: 95vw; max-height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            <div class="modal-header" style="flex-shrink: 0; padding: 14px 20px; border-bottom: 1px solid var(--border-color);">
+                <h3 class="modal-title"><i class="fa-solid fa-file-signature"></i> เขียน / อัปโหลดรายงานรายวัน</h3>
+                <button class="modal-close-btn" id="close-daily-report-modal">&times;</button>
+            </div>
+            <form id="daily-report-form" style="display: flex; flex-direction: column; overflow: hidden; height: 100%; margin: 0;">
+                <div class="modal-body" style="flex-grow: 1; overflow-y: auto; padding: 20px;">
+                    <div class="form-group">
+                        <label class="form-label" for="report-date">วันที่รายงาน <span class="required">*</span></label>
+                        <input type="date" id="report-date" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="report-desc">รายละเอียดการปฏิบัติงาน <span class="required">*</span></label>
+                        <textarea id="report-desc" class="form-control" rows="4" placeholder="ระบุสรุปความคืบหน้า จำนวนวิศวกร/ช่าง หรือปัญหาอุปสรรคที่พบ..." required style="resize: vertical; font-family: 'Prompt';"></textarea>
+                    </div>
+                    
+                    <!-- Photos Attachment Section -->
+                    <div class="form-group mt-3" style="border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                        <label class="form-label" style="font-weight: 600; color: var(--navy-dark);"><i class="fa-solid fa-images text-blue mr-1"></i> แนบรูปภาพการปฏิบัติงาน (อัปโหลดภาพหน้างาน - สูงสุด 20 ภาพ)</label>
+                        <input type="file" id="report-photos" class="form-control" accept="image/*" multiple style="padding: 6px 12px; height: auto; margin-top: 6px;">
+                        <div id="report-photos-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;"></div>
+                    </div>
+                    
+                    <!-- Signatures Section -->
+                    <div class="form-group mt-3" style="border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label class="form-label" style="font-weight: 600; color: var(--navy-dark); margin: 0;"><i class="fa-solid fa-pen-nib text-blue mr-1"></i> ลายเซ็นผู้รับรองผลการปฏิบัติงาน</label>
+                            <button type="button" id="btn-add-signer" class="btn btn-xs btn-outline-blue" style="font-size: 11px; padding: 4px 10px; cursor: pointer;">
+                                <i class="fa-solid fa-plus-circle"></i> เพิ่มผู้ลงนาม
+                            </button>
+                        </div>
+                        <div id="report-signers-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                            <!-- Dynamically added signer boxes -->
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3" style="border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                        <label class="form-label" for="report-file">แนบไฟล์รายงานอื่นเพิ่มเติม (PDF เท่านั้น - ไม่บังคับ)</label>
+                        <input type="file" id="report-file" class="form-control" accept=".pdf" style="padding: 6px 12px; height: auto;">
+                    </div>
+                </div>
+                <div class="modal-footer" style="flex-shrink: 0; padding: 14px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background: var(--bg-light);">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-report">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">ส่งรายงาน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div class="modal-overlay" id="create-project-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-folder-plus"></i> สร้างโครงการใหม่</h3>
+                <button class="modal-close-btn" id="close-create-project-modal">&times;</button>
+            </div>
+            <form id="create-project-form">
+                <div class="modal-body">
+                    <div class="form-row-2" id="create-proj-code-year-row">
+                        <div class="form-group">
+                            <label class="form-label" for="new-project-code">รหัสโครงการ <span class="required">*</span></label>
+                            <input type="text" id="new-project-code" class="form-control" placeholder="เช่น PRJ-2613" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="new-project-year">ปีโครงการ <span class="required">*</span></label>
+                            <select id="new-project-year" class="form-control" required>
+                                <option value="2024">ปี 2024</option>
+                                <option value="2025">ปี 2025</option>
+                                <option value="2026" selected>ปี 2026</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3" id="create-proj-name-group">
+                        <label class="form-label" for="new-project-name">ชื่องาน <span class="required">*</span></label>
+                        <input type="text" id="new-project-name" class="form-control" placeholder="เช่น ติดตั้งระบบบำบัดน้ำเสียประหยัดพลังงาน" required>
+                    </div>
+                    <div class="form-group mt-3" id="create-proj-hospital-group">
+                        <label class="form-label" for="new-project-hospital">ระบุโรงพยาบาล <span class="required">*</span></label>
+                        <select id="new-project-hospital" class="form-control" required>
+                            <option value="โรงพยาบาลพญาไท 1">โรงพยาบาลพญาไท 1</option>
+                            <option value="โรงพยาบาลพญาไท 2">โรงพยาบาลพญาไท 2</option>
+                            <option value="โรงพยาบาลพญาไท 3">โรงพยาบาลพญาไท 3</option>
+                            <option value="โรงพยาบาลพญาไท นวมินทร์">โรงพยาบาลพญาไท นวมินทร์</option>
+                            <option value="โรงพยาบาลพญาไท บ่อวิน">โรงพยาบาลพญาไท บ่อวิน</option>
+                            <option value="โรงพยาบาลพญาไท พหลโยธิน">โรงพยาบาลพญาไท พหลโยธิน</option>
+                            <option value="โรงพยาบาลพญาไท ศรีราชา">โรงพยาบาลพญาไท ศรีราชา</option>
+                            <option value="โรงพยาบาลเปาโล พระประแดง">โรงพยาบาลเปาโล พระประแดง</option>
+                            <option value="โรงพยาบาลเปาโล รังสิต">โรงพยาบาลเปาโล รังสิต</option>
+                            <option value="โรงพยาบาลเปาโล สมุทรปราการ">โรงพยาบาลเปาโล สมุทรปราการ</option>
+                            <option value="โรงพยาบาลเปาโล เกษตร">โรงพยาบาลเปาโล เกษตร</option>
+                            <option value="โรงพยาบาลเปาโล โชคชัย 4">โรงพยาบาลเปาโล โชคชัย 4</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-2" id="create-proj-hospital-other-group" style="display: none;">
+                        <label class="form-label" for="new-project-hospital-other">ระบุชื่อโรงพยาบาล/สถานที่อื่นๆ <span class="required">*</span></label>
+                        <input type="text" id="new-project-hospital-other" class="form-control" placeholder="พิมพ์ระบุชื่อโรงพยาบาลหรือสถานที่อื่นๆ...">
+                    </div>
+                    <div class="form-group mt-3" id="create-proj-manager-group">
+                        <label class="form-label" for="new-project-manager">ผู้รับผิดชอบโครงการ <span class="required">*</span></label>
+                        <input type="text" id="new-project-manager" class="form-control" placeholder="เช่น วิศวกรโครงการอาวุโส (PM Team)" required>
+                    </div>
+                    <div class="form-row-2 mt-3" id="create-proj-val-cost-row">
+                        <div class="form-group">
+                            <label class="form-label" for="new-project-value">มูลค่าสัญญา (บาท) <span class="required">*</span></label>
+                            <input type="number" id="new-project-value" class="form-control" placeholder="เช่น 15000000" min="0" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="new-project-cost">ต้นทุนประมาณการ (บาท) <span class="required">*</span></label>
+                            <input type="number" id="new-project-cost" class="form-control" placeholder="เช่น 12000000" min="0" step="any" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Quoting-specific fields (site visit, BOQ file, comparison links) -->
+                    <div id="create-quoting-fields-section" style="display: none; border-top: 1px dashed var(--border-color); margin-top: 16px; padding-top: 16px;">
+                        <div class="form-group">
+                            <label class="form-label" for="new-quoting-site-visit-date"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> วันที่ไปดูงาน</label>
+                            <input type="date" id="new-quoting-site-visit-date" class="form-control">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="new-quoting-boq-file"><i class="fa-solid fa-file-pdf text-red mr-1"></i> แนบไฟล์ BOQ</label>
+                            <input type="file" id="new-quoting-boq-file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" style="padding: 5px; height: auto;">
+                        </div>
+                        <div class="form-row-2 mt-3">
+                            <div class="form-group">
+                                <label class="form-label" for="new-quoting-comparison-1"><i class="fa-solid fa-link text-blue mr-1"></i> ลิงก์คู่เทียบ 1</label>
+                                <input type="url" id="new-quoting-comparison-1" class="form-control" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="new-quoting-comparison-2"><i class="fa-solid fa-link text-blue mr-1"></i> ลิงก์คู่เทียบ 2</label>
+                                <input type="url" id="new-quoting-comparison-2" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="new-quoting-remarks"><i class="fa-solid fa-comment-dots text-muted mr-1"></i> หมายเหตุ</label>
+                            <input type="text" id="new-quoting-remarks" class="form-control" placeholder="เช่น สถานะ: ติดตามผล, รอโรงพยาบาลพิจารณา">
+                        </div>
+                    </div>
+                    
+                    <!-- Project Document Upload Section -->
+                    <div id="create-proj-doc-section" style="border-top: 1px dashed var(--border-color); margin-top: 16px; padding-top: 16px;">
+                        <label class="form-label" style="font-weight: 600; color: var(--navy-medium);"><i class="fa-solid fa-file-pdf text-red mr-1"></i> อัปโหลดเอกสารโครงการ (ถ้ามี)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+                            <div class="form-group">
+                                <label class="form-label" for="create-proj-doc-file" style="font-size: 10.5px; margin-bottom: 2px;">เลือกไฟล์เอกสาร</label>
+                                <input type="file" id="create-proj-doc-file" class="form-control" style="padding: 4px; height: auto;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="create-proj-doc-type" style="font-size: 10.5px; margin-bottom: 2px;">ประเภทเอกสาร</label>
+                                <select id="create-proj-doc-type" class="form-control" style="padding: 4px; height: auto; font-family: 'Prompt';">
+                                    <option value="Contract">สัญญา</option>
+                                    <option value="BOQ">BOQ</option>
+                                    <option value="PO">PO</option>
+                                    <option value="Drawings">แบบแปลน</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span style="font-size: 10.5px; color: var(--text-muted); margin-top: 4px; display: block;">ไฟล์เอกสารที่อัปโหลดจะถูกนำไปจัดเก็บไว้ที่แท็บเอกสารโครงการย่อยให้โดยอัตโนมัติ</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-create-project">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-create-project">สร้างโครงการ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task PDF Upload Modal -->
+    <div class="modal-overlay" id="task-pdf-upload-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-file-pdf"></i> แนบเอกสารรายละเอียดความคืบหน้า</h3>
+                <button class="modal-close-btn" id="close-task-pdf-modal">&times;</button>
+            </div>
+            <form id="task-pdf-upload-form">
+                <input type="hidden" id="upload-task-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="task-pdf-file">เลือกไฟล์ PDF รายละเอียด <span class="required">*</span></label>
+                        <input type="file" id="task-pdf-file" class="form-control" accept=".pdf" required style="padding: 6px 12px; height: auto;">
+                        <span style="font-size: 11px; color: var(--text-muted); margin-top: 6px; display: block;">อัปโหลดรายงานความก้าวหน้าเพื่อชี้แจงรายละเอียดแผนงานที่สอดคล้องกับ % ความคืบหน้าจริง</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="btn-cancel-task-pdf">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">อัปโหลดรายงาน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="task-modal-title"><i class="fa-solid fa-tasks"></i> เพิ่มรายการงานย่อย</h3>
+                <button class="modal-close-btn" id="close-task-modal">&times;</button>
+            </div>
+            <form id="add-task-form">
+                <input type="hidden" id="task-id-input">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="task-title-input">ชื่อรายการงานย่อย <span class="required">*</span></label>
+                        <input type="text" id="task-title-input" class="form-control" placeholder="เช่น งานติดตั้งตู้ไฟย่อย DB-1" required>
+                    </div>
+                    <div class="form-row-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="task-start-input">วันที่เริ่มต้น <span class="required">*</span></label>
+                            <input type="date" id="task-start-input" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-end-input">วันที่สิ้นสุด <span class="required">*</span></label>
+                            <input type="date" id="task-end-input" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="task-progress-input">เปอร์เซ็นต์ความคืบหน้า (%) <span class="required">*</span></label>
+                            <input type="number" id="task-progress-input" class="form-control" min="0" max="100" step="any" placeholder="0 - 100" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="task-ref-file">แนบรายงาน PDF (ไม่บังคับ)</label>
+                            <input type="file" id="task-ref-file" class="form-control" accept=".pdf" style="padding: 6px 12px; height: auto;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-task-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกรายการ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Plan Modal -->
+    <div class="modal-overlay" id="plan-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-calendar-alt"></i> เพิ่มแผนงานใหม่</h3>
+                <button class="modal-close-btn" id="close-plan-modal">&times;</button>
+            </div>
+            <form id="add-plan-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="plan-title-input">ชื่อหมวดงานแผนงาน <span class="required">*</span></label>
+                        <input type="text" id="plan-title-input" class="form-control" placeholder="เช่น งานระบบสุขาภิบาล" required>
+                    </div>
+                    <div class="form-row-2 mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="plan-quarter-input">ไตรมาสเริ่มต้น <span class="required">*</span></label>
+                            <select id="plan-quarter-input" class="form-control" required>
+                                <option value="0">Q1</option>
+                                <option value="25">Q2</option>
+                                <option value="50">Q3</option>
+                                <option value="75">Q4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="plan-duration-input">ระยะเวลางาน <span class="required">*</span></label>
+                            <select id="plan-duration-input" class="form-control" required>
+                                <option value="25">1 ไตรมาส (25%)</option>
+                                <option value="50">2 ไตรมาส (50%)</option>
+                                <option value="75">3 ไตรมาส (75%)</option>
+                                <option value="100">4 ไตรมาส (100%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="plan-color-input">โทนสีของแท่ง Gantt <span class="required">*</span></label>
+                        <select id="plan-color-input" class="form-control" required>
+                            <option value="blue">Blue (น้ำเงิน)</option>
+                            <option value="green">Green (เขียว)</option>
+                            <option value="orange">Orange (ส้ม)</option>
+                            <option value="purple">Purple (ม่วง)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-plan-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกแผนงาน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Add Plan Document Modal -->
+    <div class="modal-overlay" id="plan-doc-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-file-arrow-up"></i> อัปโหลดหนังสือขอเข้างาน</h3>
+                <button class="modal-close-btn" id="close-plan-doc-modal">&times;</button>
+            </div>
+            <form id="add-plan-doc-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="plan-doc-title">ชื่อเอกสาร / รายละเอียดหนังสือขอเข้างาน <span class="required">*</span></label>
+                        <input type="text" id="plan-doc-title" class="form-control" placeholder="เช่น หนังสือขอเข้าทำงานอาคาร A ชั้น 15" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="plan-doc-date">วันที่ระบุในหนังสือขอเข้างาน <span class="required">*</span></label>
+                        <input type="date" id="plan-doc-date" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="plan-doc-file">เลือกไฟล์เอกสาร (PDF, Excel, หรือรูปภาพ) <span class="required">*</span></label>
+                        <input type="file" id="plan-doc-file" class="form-control" accept=".pdf,.xlsx,.xls,.png,.jpg,.jpeg" required>
+                        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">รองรับไฟล์สกุล PDF, XLSX, XLS, PNG, JPG, JPEG ขนาดไม่เกิน 50MB</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-plan-doc-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">อัปโหลดไฟล์</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Toast Notification -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15,23,42,0.4); z-index: 998; backdrop-filter: blur(4px); transition: opacity 0.25s ease;"></div>
+
+    <!-- PDF Viewer Modal -->
+    <div class="modal-overlay" id="pdf-viewer-modal" style="z-index: 1100;">
+        <div class="modal-card" style="width: 90vw; max-width: 900px; height: 88vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            <div class="modal-header" style="flex-shrink: 0; padding: 14px 20px;">
+                <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-pdf" style="color: #e63946;"></i>
+                    <span id="pdf-viewer-title">ดูเอกสาร PDF</span>
+                </h3>
+                <button class="modal-close-btn" id="close-pdf-viewer-modal">&times;</button>
+            </div>
+            <div style="flex-grow: 1; background: #525659; overflow: hidden; position: relative;">
+                <embed id="pdf-viewer-embed" src="" type="application/pdf" style="width: 100%; height: 100%; border: none;" />
+                <div id="pdf-viewer-fallback" style="display: none; text-align: center; padding: 60px 20px; color: #ccc;">
+                    <i class="fa-solid fa-file-pdf" style="font-size: 48px; margin-bottom: 16px; color: #e63946;"></i>
+                    <p style="font-size: 14px; margin-bottom: 16px;">เบราว์เซอร์ของคุณไม่รองรับการแสดง PDF โดยตรง</p>
+                    <a id="pdf-viewer-download-link" href="#" download class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px;">
+                        <i class="fa-solid fa-circle-down"></i> ดาวน์โหลดไฟล์แทน
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-shrink: 0; padding: 10px 20px;">
+                <a id="pdf-viewer-download-btn" href="#" download class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px;">
+                    <i class="fa-solid fa-circle-down"></i> ดาวน์โหลด
+                </a>
+                <button class="btn btn-primary" id="close-pdf-viewer-modal-2">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Project Modal -->
+    <div class="modal-overlay" id="edit-project-modal">
+        <div class="modal-card" style="max-width: 560px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลโครงการ</h3>
+                <button class="modal-close-btn" id="close-edit-project-modal">&times;</button>
+            </div>
+            <form id="edit-project-form">
+                <input type="hidden" id="edit-project-code">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">รหัสโครงการ</label>
+                        <input type="text" id="edit-project-code-display" class="form-control" disabled style="background: var(--bg-light); color: var(--text-muted);">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="edit-project-name">ชื่องาน <span class="required">*</span></label>
+                        <input type="text" id="edit-project-name" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3" id="edit-proj-customer-group">
+                        <label class="form-label" for="edit-project-customer">ระบุโรงพยาบาล <span class="required">*</span></label>
+                        <select id="edit-project-customer" class="form-control">
+                            <option value="โรงพยาบาลพญาไท 1">โรงพยาบาลพญาไท 1</option>
+                            <option value="โรงพยาบาลพญาไท 2">โรงพยาบาลพญาไท 2</option>
+                            <option value="โรงพยาบาลพญาไท 3">โรงพยาบาลพญาไท 3</option>
+                            <option value="โรงพยาบาลพญาไท นวมินทร์">โรงพยาบาลพญาไท นวมินทร์</option>
+                            <option value="โรงพยาบาลพญาไท บ่อวิน">โรงพยาบาลพญาไท บ่อวิน</option>
+                            <option value="โรงพยาบาลพญาไท พหลโยธิน">โรงพยาบาลพญาไท พหลโยธิน</option>
+                            <option value="โรงพยาบาลพญาไท ศรีราชา">โรงพยาบาลพญาไท ศรีราชา</option>
+                            <option value="โรงพยาบาลเปาโล พระประแดง">โรงพยาบาลเปาโล พระประแดง</option>
+                            <option value="โรงพยาบาลเปาโล รังสิต">โรงพยาบาลเปาโล รังสิต</option>
+                            <option value="โรงพยาบาลเปาโล สมุทรปราการ">โรงพยาบาลเปาโล สมุทรปราการ</option>
+                            <option value="โรงพยาบาลเปาโล เกษตร">โรงพยาบาลเปาโล เกษตร</option>
+                            <option value="โรงพยาบาลเปาโล โชคชัย 4">โรงพยาบาลเปาโล โชคชัย 4</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-2" id="edit-proj-customer-other-group" style="display: none;">
+                        <label class="form-label" for="edit-project-customer-other">ระบุชื่อโรงพยาบาล/สถานที่อื่นๆ <span class="required">*</span></label>
+                        <input type="text" id="edit-project-customer-other" class="form-control" placeholder="พิมพ์ระบุชื่อโรงพยาบาลหรือสถานที่อื่นๆ...">
+                    </div>
+                    <div class="form-group mt-3" id="edit-proj-manager-group">
+                        <label class="form-label" for="edit-project-manager">ผู้รับผิดชอบโครงการ <span class="required">*</span></label>
+                        <input type="text" id="edit-project-manager" class="form-control" required>
+                    </div>
+                    <div class="form-row-2 mt-3" id="edit-proj-val-cost-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-project-value">มูลค่าสัญญา (บาท)</label>
+                            <input type="number" id="edit-project-value" class="form-control" min="0" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-project-cost">ต้นทุนจริง (บาท)</label>
+                            <input type="number" id="edit-project-cost" class="form-control" min="0" step="any">
+                        </div>
+                    </div>
+                    <div class="form-row-3 mt-3" id="edit-proj-dates-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-project-podate"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> วันที่ออก PO</label>
+                            <input type="date" id="edit-project-podate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-project-start">วันที่เริ่มต้น</label>
+                            <input type="date" id="edit-project-start" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-project-end">วันที่สิ้นสุด</label>
+                            <input type="date" id="edit-project-end" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row-2 mt-3" id="edit-proj-progress-row">
+                        <div class="form-group" id="edit-proj-planned-group">
+                            <label class="form-label" for="edit-project-planned">แผน % (Planned)</label>
+                            <input type="number" id="edit-project-planned" class="form-control" min="0" max="100" step="any">
+                        </div>
+                        <div class="form-group" id="edit-proj-progress-group">
+                            <label class="form-label" for="edit-project-progress">ความคืบหน้า (%) (คำนวณอัตโนมัติ)</label>
+                            <input type="number" id="edit-project-progress" class="form-control" min="0" max="100" step="any" disabled style="background: var(--bg-light); color: var(--text-muted);">
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="edit-project-status">สถานะโครงการ</label>
+                        <select id="edit-project-status" class="form-control">
+                            <option value="งานที่กำลังดำเนินการ">งานที่กำลังดำเนินการ</option>
+                            <option value="งานที่ดำเนินการเสร็จแล้ว">งานที่ดำเนินการเสร็จแล้ว</option>
+                            <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
+                            <option value="งานที่รอเสนอราคา">งานที่รอเสนอราคา</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="edit-project-desc">รายละเอียดโครงการ</label>
+                        <textarea id="edit-project-desc" class="form-control" rows="3" style="resize: vertical;"></textarea>
+                    </div>
+                    <!-- Quoting-specific fields (site visit, BOQ file, comparison links) -->
+                    <div id="edit-quoting-fields-section" style="display: none; border-top: 1px dashed var(--border-color); margin-top: 16px; padding-top: 16px;">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-quoting-site-visit-date"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> วันที่ไปดูงาน</label>
+                            <input type="date" id="edit-quoting-site-visit-date" class="form-control">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="edit-quoting-boq-file"><i class="fa-solid fa-file-pdf text-red mr-1"></i> แนบไฟล์ BOQ (อัปโหลดใหม่เพื่อเปลี่ยน)</label>
+                            <input type="file" id="edit-quoting-boq-file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" style="padding: 5px; height: auto;">
+                            <div id="edit-quoting-boq-current-file" style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"></div>
+                        </div>
+                        <div class="form-row-2 mt-3">
+                            <div class="form-group">
+                                <label class="form-label" for="edit-quoting-comparison-1"><i class="fa-solid fa-link text-blue mr-1"></i> ลิงก์คู่เทียบ 1</label>
+                                <input type="url" id="edit-quoting-comparison-1" class="form-control" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-quoting-comparison-2"><i class="fa-solid fa-link text-blue mr-1"></i> ลิงก์คู่เทียบ 2</label>
+                                <input type="url" id="edit-quoting-comparison-2" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label" for="edit-quoting-remarks"><i class="fa-solid fa-comment-dots text-muted mr-1"></i> หมายเหตุ</label>
+                            <input type="text" id="edit-quoting-remarks" class="form-control" placeholder="เช่น สถานะ: ติดตามผล, รอโรงพยาบาลพิจารณา">
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 16px;">
+                        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i> ลบโครงการนี้ออกจากระบบถาวร</p>
+                        <button type="button" class="btn btn-sm" id="btn-delete-project" style="background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-trash-can"></i> ลบโครงการนี้
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-edit-project-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> บันทึกการแก้ไข</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="change-password-modal" style="z-index: 1300;">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-key text-blue"></i> เปลี่ยนรหัสผ่านใหม่ (Change Password)</h3>
+                <button class="modal-close-btn" id="close-change-password-modal">&times;</button>
+            </div>
+            <form id="change-password-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="chg-pass-current">รหัสผ่านปัจจุบัน <span class="required">*</span></label>
+                        <input type="password" id="chg-pass-current" class="form-control" placeholder="กรอกรหัสผ่านปัจจุบัน" required autocomplete="off">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="chg-pass-new">รหัสผ่านใหม่ <span class="required">*</span></label>
+                        <input type="password" id="chg-pass-new" class="form-control" placeholder="กรอกรหัสผ่านใหม่ (อย่างน้อย 4 ตัวอักษร)" required minlength="4" autocomplete="off">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="chg-pass-confirm">ยืนยันรหัสผ่านใหม่ <span class="required">*</span></label>
+                        <input type="password" id="chg-pass-confirm" class="form-control" placeholder="ยืนยันรหัสผ่านใหม่" required minlength="4" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+                    <button type="button" class="btn btn-outline" id="cancel-change-password-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนรหัส</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Customer User Modal -->
+    <div class="modal-overlay" id="create-customer-modal" style="z-index: 1200;">
+        <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-user-plus text-blue"></i> เจนสร้างบัญชีผู้ใช้งานลูกค้าใหม่</h3>
+                <button class="modal-close-btn" id="close-create-customer-modal">&times;</button>
+            </div>
+            <form id="create-customer-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="new-cust-name">ชื่อบัญชีลูกค้า / โรงพยาบาล (ไม่บังคับ)</label>
+                        <input type="text" id="new-cust-name" class="form-control" list="all-hospitals-datalist" placeholder="เช่น ตัวแทน รพ.เปาโล โชคชัย 4" autocomplete="off">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="new-cust-username">ชื่อผู้ใช้งาน (Username) <span class="required">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="new-cust-username" class="form-control" placeholder="เช่น cust_paolo" required style="font-family: monospace; font-weight: 600;">
+                            <button type="button" class="btn btn-outline" id="btn-auto-gen-username" style="font-size: 11px; white-space: nowrap;"><i class="fa-solid fa-wand-magic-sparkles"></i> สุ่มชื่อ</button>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="new-cust-password">รหัสผ่าน (Password) <span class="required">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="new-cust-password" class="form-control" placeholder="ระบุรหัสผ่าน" required style="font-family: monospace; font-weight: 600;">
+                            <button type="button" class="btn btn-outline" id="btn-auto-gen-password" style="font-size: 11px; white-space: nowrap;"><i class="fa-solid fa-dice"></i> สุ่มรหัสผ่าน</button>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="new-cust-role">ประเภทบัญชีผู้ใช้ (Role) <span class="required">*</span></label>
+                        <select id="new-cust-role" class="form-control" style="font-family: 'Prompt'; font-weight: 600; border-radius: 6px; padding: 6px 10px;">
+                            <option value="customer" selected>Customer View (ลูกค้า - สิทธิ์ดูเฉพาะโครงการที่ระบุ)</option>
+                            <option value="pe">Project Engineer (PE - สิทธิ์แก้ไขเฉพาะโครงการที่ระบุ)</option>
+                            <option value="technician">Technician (ช่าง/หน้างาน - สิทธิ์ดูอย่างเดียวเฉพาะโครงการที่ระบุ)</option>
+                            <option value="pm">Project Manager (PM - จัดการงาน/แผนงาน/รายงานประจำวัน)</option>
+                            <option value="accounting">Accounting (AC - ฝ่ายบัญชี/บันทึกค่าใช้จ่ายโครงการ)</option>
+                            <option value="admin">Admin (ผู้ดูแลระบบสูงสุด - จัดการข้อมูล/บัญชีผู้ใช้งานได้ทุกส่วน)</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3" style="background: var(--bg-light); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm);">
+                        <span style="font-size: 11px; color: var(--text-muted); display: block;"><i class="fa-solid fa-circle-info text-blue mr-1"></i> บทบาท Customer, PE และ Technician จะถูกจำกัดการเข้าถึงเฉพาะโครงการที่ระบุสิทธิ์ไว้เท่านั้น โดย PE จะสามารถแก้ไขได้ และ Technician/Customer จะดูได้เพียงอย่างเดียว</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-create-customer-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-create-customer"><i class="fa-solid fa-check-circle"></i> สร้างบัญชีผู้ใช้</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Share Modal -->
+    <div class="modal-overlay" id="portal-share-modal" style="z-index: 12000; display: none;">
+        <div class="modal-card" style="max-width: 900px; width: 95%;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-share-nodes text-blue"></i> สร้างลิงก์แชร์โครงการภายนอก</h3>
+                <button class="modal-close-btn" id="close-portal-share-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <p style="font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px 0;">คุณสามารถเลือกโครงการย่อยหรือโรงพยาบาลหลายๆ รายการเข้าไว้ด้วยกันในลิงก์เดียว เมื่อส่งลิงก์นี้ให้ผู้อื่นจะเข้าถึงเฉพาะโครงการที่เลือกโดยไม่ต้องล็อกอิน</p>
+                
+                <!-- 3. Link Output Container (Moved to Top for instant visibility!) -->
+                <div id="share-link-output-container" style="display: none; margin-bottom: 20px; padding: 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                    <div style="font-size: 12.5px; font-weight: 700; color: #15803d; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-check"></i> สร้างลิงก์แชร์ใหม่สำเร็จ! (คัดลอกลงคลิปบอร์ดให้อัตโนมัติแล้ว)
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                        <input type="text" id="share-link-result-url" class="form-control" readonly style="font-size: 12px; font-family: monospace; background: #ffffff; font-weight: 600;">
+                        <button type="button" class="btn btn-outline-green" id="btn-copy-share-result-url" style="white-space: nowrap; font-size: 12px; padding: 8px 14px;"><i class="fa-solid fa-copy"></i> คัดลอกลิงก์</button>
+                    </div>
+                    <span style="font-size: 10.5px; color: #166534; display: block; margin-top: 8px; font-style: italic;">* ลิงก์แชร์ถูกสร้างขึ้นใหม่เป็นรหัสอ้างอิงเฉพาะตัว (ทุกครั้งที่กด จะเป็นการสร้างใหม่เสมอ)</span>
+                </div>
+
+                <!-- 4. Search Filter Input Box -->
+                <div style="margin-bottom: 20px; background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="font-size: 12.5px; font-weight: 700; color: var(--navy-dark); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-magnifying-glass text-blue"></i> 🔍 พิมพ์ค้นหาโครงการ หรือโรงพยาบาล :</span>
+                        <button type="button" id="btn-clear-share-search" style="background: none; border: none; font-size: 11.5px; color: #ef4444; cursor: pointer; padding: 0; display: none; font-family: 'Prompt'; font-weight: 700;"><i class="fa-solid fa-circle-xmark"></i> ล้างการกรอง</button>
+                    </div>
+                    <input type="text" id="share-modal-project-search" class="form-control" placeholder="พิมพ์เพื่อค้นหาด้วย รหัส PO, ชื่องาน, หรือชื่อโรงพยาบาล..." style="font-size: 12.5px; padding: 8px 12px; height: 38px; border-radius: 6px;">
+                </div>
+                
+                <div style="border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 16px; display: flex; gap: 16px;">
+                    <span style="font-weight: 700; font-size: 13.5px; color: var(--navy-dark); border-bottom: 2px solid var(--primary-blue); padding-bottom: 8px; margin-bottom: -10px;">รายการเลือกขอบเขตข้อมูลการแชร์</span>
+                </div>
+
+                <!-- Side by Side Checklists Grid Layout -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
+                    <!-- 1. Hospital share list -->
+                    <div style="display: flex; flex-direction: column;">
+                        <label class="form-label" style="font-size: 12px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>🏥 เลือกตามโรงพยาบาล (จะรวมทุกโครงการภายใต้ รพ.)</span>
+                            <button type="button" id="btn-share-clear-hospitals" style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; padding: 0; font-family: 'Prompt';">ล้างการเลือก</button>
+                        </label>
+                        <div id="share-hospitals-checkboxes" style="display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; background: #fafafa;">
+                            <!-- Populated dynamically with checkboxes -->
+                        </div>
+                    </div>
+
+                    <!-- 2. Project share list -->
+                    <div style="display: flex; flex-direction: column;">
+                        <label class="form-label" style="font-size: 12px; font-weight: 700; color: var(--navy-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>📁 เลือกเฉพาะบางโครงการย่อย</span>
+                            <button type="button" id="btn-share-clear-projects" style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; padding: 0; font-family: 'Prompt';">ล้างการเลือก</button>
+                        </label>
+                        <div id="share-projects-checkboxes" style="display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; background: #fafafa;">
+                            <!-- Populated dynamically with checkboxes -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancel-portal-share-btn">ยกเลิก/ปิด</button>
+                <button type="button" class="btn btn-primary" id="btn-generate-share-link"><i class="fa-solid fa-link"></i> สร้างลิงก์แชร์ใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Daily Report Sign-off Modal -->
+    <div class="modal-overlay" id="customer-sign-modal" style="z-index: 12000; display: none;">
+        <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-signature text-blue"></i> ลงนามรับรองรายงานปฏิบัติงานประจำวัน</h3>
+                <button class="modal-close-btn" id="close-customer-sign-modal">&times;</button>
+            </div>
+            <form id="customer-sign-form">
+                <div class="modal-body">
+                    <input type="hidden" id="customer-sign-report-idx">
+                    <div class="form-group">
+                        <label class="form-label" for="customer-sign-name">ชื่อ-นามสกุลผู้ลงนามรับรอง <span class="required">*</span></label>
+                        <input type="text" id="customer-sign-name" class="form-control" list="signer-names-datalist" placeholder="เช่น นายสมชาย ใจดี" required autocomplete="off">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="customer-sign-role">ตำแหน่ง / บทบาทผู้ลงนาม <span class="required">*</span></label>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="customer-sign-role" class="form-control signer-role-select" required style="font-family: 'Prompt'; font-weight: 600; border-radius: 6px; padding: 6px 10px; height: 38px;">
+                                <!-- Filled dynamically -->
+                            </select>
+                            <button type="button" class="btn btn-outline" id="btn-add-custom-customer-role" style="font-size: 12px; white-space: nowrap;"><i class="fa-solid fa-plus"></i> เพิ่มตำแหน่ง</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-3">
+                        <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span>วาดลายเซ็นลงบนพื้นที่ด้านล่าง <span class="required">*</span></span>
+                            <button type="button" class="btn-clear-customer-sig" style="background: none; border: none; font-size: 11px; color: #3b82f6; cursor: pointer; text-decoration: underline; padding: 0; font-family: 'Prompt';">ล้างหน้าจอเขียน</button>
+                        </label>
+                        <canvas id="customer-signature-canvas" width="400" height="120" style="border: 1px dashed var(--border-color); border-radius: 6px; background: #ffffff; cursor: crosshair; display: block; touch-action: none; width: 100%; height: 120px;"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-customer-sign-btn">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-customer-sign"><i class="fa-solid fa-check-circle"></i> ยืนยันการลงนามรับรอง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Global Hospitals Autocomplete Datalist -->
+    <datalist id="all-hospitals-datalist">
+        <option value="โรงพยาบาลพญาไท 1"></option>
+        <option value="โรงพยาบาลพญาไท 2"></option>
+        <option value="โรงพยาบาลพญาไท 3"></option>
+        <option value="โรงพยาบาลพญาไท นวมินทร์"></option>
+        <option value="โรงพยาบาลพญาไท บ่อวิน"></option>
+        <option value="โรงพยาบาลพญาไท พหลโยธิน"></option>
+        <option value="โรงพยาบาลพญาไท ศรีราชา"></option>
+        <option value="โรงพยาบาลเปาโล พระประแดง"></option>
+        <option value="โรงพยาบาลเปาโล รังสิต"></option>
+        <option value="โรงพยาบาลเปาโล สมุทรปราการ"></option>
+        <option value="โรงพยาบาลเปาโล เกษตร"></option>
+        <option value="โรงพยาบาลเปาโล โชคชัย 4"></option>
+        <option value="อื่นๆ"></option>
+    </datalist>
+

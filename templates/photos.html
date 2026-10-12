@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}รูปภาพ/ไฟล์ {{ active_project }} - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+                        <!-- Subtab 5: Photos / Files -->
+                        <div id="subtab-photos-files-view" class="subtab-panel">
+                            <section class="section-card">
+                                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+                                    <h2 class="section-title"><i class="fa-solid fa-images text-blue mr-1"></i> คลังรูปภาพโครงการ & ไฟล์สำคัญ (Gallery & Drive)</h2>
+                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="subnav-open-media-modal-btn">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> อัปโหลดรูปภาพ / ไฟล์
+                                    </button>
+                                </div>
+                                <div class="photos-gallery-grid" id="project-media-gallery-grid">
+                                    <!-- Populated dynamically in app.js -->
+                                </div>
+                            </section>
+                        </div>
+                        
+
+{% endblock %}

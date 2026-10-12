@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}ค่าใช้จ่ายโครงการ {{ active_project }} - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+                        <!-- Subtab 6: Cost Management (Project Cost) -->
+                        <div id="subtab-cost-tab-view" class="subtab-panel">
+                            <!-- Left: Cost Summary Panel -->
+                            <div class="cost-split-grid-subtab hide-customer">
+                                <div class="cost-summary-panel">
+                                    <h4 class="panel-subtitle-thai">สรุปค่าใช้จ่ายของโครงการ</h4>
+                                    <div class="cost-metric-card-group">
+                                        <div class="cost-metric-row">
+                                            <span class="lbl">มูลค่าโครงการ</span>
+                                            <div class="val-group">
+                                                <span class="val" id="subtab-cost-v-value">0</span>
+                                                <span class="unit">บาท</span>
+                                            </div>
+                                        </div>
+                                        <div class="cost-metric-row">
+                                            <span class="lbl">ต้นทุนรวม</span>
+                                            <div class="val-group">
+                                                <span class="val text-navy" id="subtab-cost-v-cost">0</span>
+                                                <span class="unit">บาท</span>
+                                            </div>
+                                        </div>
+                                        <div class="cost-metric-row hide-pm">
+                                            <span class="lbl">กำไร</span>
+                                            <div class="val-group">
+                                                <span class="val text-green" id="subtab-cost-v-profit">0</span>
+                                                <span class="unit">บาท</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cost-structure-container mt-4">
+                                        <h5 class="panel-subtitle-thai mb-2">โครงสร้างต้นทุนแยกตามประเภท</h5>
+                                        <div class="cost-donut-wrapper">
+                                            <canvas id="subtabCostStructureDonut"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right: Expenses Table List -->
+                                <div class="expenses-list-panel">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="panel-subtitle-thai mb-0">รายการเบิกจ่ายต้นทุนของโครงการ</h4>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn btn-sm btn-outline-blue hide-accounting" id="subtab-open-expense-modal-btn" style="font-family: 'Prompt'; font-size: 11px;">
+                                                <i class="fa-solid fa-plus"></i> บันทึกจ่ายตรง
+                                            </button>
+                                            <button class="btn btn-sm btn-primary hide-accounting" id="subtab-open-drawdown-modal-btn" style="font-family: 'Prompt'; font-size: 11px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light)); border: none; box-shadow: var(--shadow-sm);">
+                                                <i class="fa-solid fa-paper-plane"></i> ขอเบิกงบโครงการ
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="table-container shadow-sm border-rounded-md" style="max-height: 400px; overflow-y: auto;">
+                                        <table class="doc-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>วันที่ทำรายการ</th>
+                                                    <th>รายการค่าใช้จ่าย</th>
+                                                    <th>ประเภท</th>
+                                                    <th>สถานะ</th>
+                                                    <th class="text-right">จำนวนเงิน</th>
+                                                    <th class="text-center hide-accounting" style="width: 130px;">จัดการ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="subtab-expenses-table-body">
+                                                <!-- Filled dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Customer fallback -->
+                            <div class="only-customer text-center py-5 text-muted">
+                                <i class="fa-solid fa-eye-slash mb-3 fs-1 text-danger"></i>
+                                <h3>ไม่มีสิทธิ์เข้าถึงข้อมูลต้นทุน</h3>
+                                <p class="max-w-md mx-auto mt-2">ในฐานะลูกค้า (Customer) ข้อมูลทางการเงิน เช่น ต้นทุนของโครงการ โครงสร้างต้นทุน และรายละเอียดธุรกรรมจะถูกปิดกั้นเพื่อรักษาความลับทางการค้า</p>
+                            </div>
+                        </div>
+                        
+
+{% endblock %}

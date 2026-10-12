@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ระบบจัดการโครงการ (Project Management System){% endblock %}</title>
+    <!-- Google Fonts for modern Thai & English typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <!-- Error boundary for debugging JS errors on the user side -->
+    <script>
+        window.addEventListener('error', function(e) {
+            const errDiv = document.createElement('div');
+            errDiv.style = "position:fixed;top:0;left:0;width:100%;background:#ef4444;color:#fff;padding:12px;z-index:999999;font-family:monospace;font-size:12px;box-shadow:0 4px 6px rgba(0,0,0,0.1);";
+            errDiv.innerHTML = '<strong>Javascript Error Caught:</strong> ' + e.message + ' at ' + e.filename + ':' + e.lineno;
+            document.body.appendChild(errDiv);
+        });
+    </script>
+    <!-- Chart.js for beautiful interactive visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS Client for Real-time Cloud Database -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body class="role-pm">
+    <!-- Public View Header (shown when ?project=xxx is in URL) -->
+    <div id="public-view-header">
+        <img src="/static/logo.png" alt="TECHNICAL WATER Logo">
+        <div>
+            <div class="pub-title">TECHNICAL WATER ENGINEERING & FACILITY</div>
+            <div class="pub-subtitle" id="public-proj-subtitle">รายงานความคืบหน้าโครงการ</div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area" style="padding: 16px 18px; gap: 8px;">
+                <img src="/static/logo.png" alt="TECHNICAL WATER Logo" class="logo-image" style="width: 44px; height: 44px; object-fit: contain;">
+                <div class="logo-text">
+                    <span class="logo-title" style="font-size: 13.5px; font-weight: 800; letter-spacing: -0.4px;">TECHNICAL WATER</span>
+                    <span class="logo-subtitle" style="font-size: 8px; font-weight: 700; letter-spacing: 0.1px; text-transform: uppercase; white-space: nowrap; color: var(--navy-light);">ENGINEERING & FACILITY</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="nav-item {% if active_page == 'dashboard' %}active{% endif %} hide-customer" data-view="dashboard">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <div class="nav-label">
+                        <span class="main-label">Dashboard</span>
+                        <span class="sub-label">ภาพรวมโครงการ</span>
+                    </div>
+                </a>
+                <a href="/quoting" class="nav-item {% if active_page == 'quoting' %}active{% endif %}" data-view="quoting-projects-list" id="nav-item-quoting">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <div class="nav-label">
+                        <span class="main-label">งานที่กำลังเสนอราคา</span>
+                        <span class="sub-label">รายการเสนอราคา</span>
+                    </div>
+                </a>
+                <a href="/projects" class="nav-item {% if active_page == 'projects' %}active{% endif %}" data-view="projects-list" id="nav-item-projects">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <div class="nav-label">
+                        <span class="main-label">Project</span>
+                        <span class="sub-label">โครงการทั้งหมด</span>
+                    </div>
+                </a>
+                
+                <!-- Project Detail Subnav nested under Project main link -->
+                <div class="sidebar-project-subnav" id="sidebar-project-subnav" style="{% if active_project %}display: block;{% else %}display: none;{% endif %}">
+                    <div class="sidebar-project-header">
+                        <i class="fa-solid fa-folder-open sidebar-proj-icon" id="subnav-header-icon"></i>
+                        <div class="sidebar-proj-title-group">
+                            <span class="sidebar-proj-title" id="subnav-header-title">Project Detail</span>
+                            <strong class="sidebar-proj-code-display" id="subnav-proj-code">{{ active_project }}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-project-selector-wrapper" id="sidebar-project-selector-wrapper">
+                        <!-- Year selector for the project page -->
+                        <label for="subnav-year-filter" class="selector-label" style="margin-top: 8px;">ปีโครงการ :</label>
+                        <select id="subnav-year-filter" class="form-control" style="margin-bottom: 12px; font-size: 11px; padding: 4px 6px; height: auto; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #1e293b;">
+                            <option value="all" selected>ทั้งหมดทุกปี</option>
+                            <option value="2024">ปี 2024</option>
+                            <option value="2025">ปี 2025</option>
+                            <option value="2026">ปี 2026</option>
+                        </select>
+
+                        <label for="subnav-hospital-selector" class="selector-label">เลือกโรงพยาบาล :</label>
+                        <select id="subnav-hospital-selector" class="form-control" style="margin-bottom: 12px; font-size: 12px; padding: 6px; height: auto;">
+                            <!-- Populated dynamically with hospitals -->
+                        </select>
+
+                        <div class="position-relative" style="position: relative; width: 100%;">
+                            <label for="sidebar-project-search" class="selector-label">พิมพ์ค้นหาโครงการ :</label>
+                            <input type="text" id="sidebar-project-search" class="form-control" placeholder="พิมพ์รหัส หรือ ชื่องานเพื่อค้นหา..." style="margin-bottom: 12px; font-size: 12px; padding: 6px; height: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; background: #ffffff;" autocomplete="off">
+                            <div id="sidebar-search-results" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); box-shadow: 0 10px 25px rgba(0,0,0,0.15); max-height: 250px; overflow-y: auto; z-index: 1005; padding: 4px 0; margin-top: -8px;"></div>
+                        </div>
+
+                        <label for="subnav-project-selector" class="selector-label">เลือกงาน/โครงการ :</label>
+                        <select id="subnav-project-selector" class="form-control" style="margin-bottom: 12px; font-size: 12px; padding: 6px; height: auto; background-color: var(--primary-light); color: var(--navy-dark); font-weight: 600;">
+                            <!-- Populated dynamically -->
+                        </select>
+                        
+                        <!-- Quick Project Status Selector -->
+                        <div class="hide-customer" style="margin-top: 4px; margin-bottom: 12px;">
+                            <label for="subnav-project-status-selector" class="selector-label" style="display: flex; align-items: center; justify-content: space-between;">
+                                <span>ปรับสถานะโครงการ :</span>
+                                <span id="subnav-status-badge" style="font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: #dcfce7; color: #15803d;">งานที่กำลังดำเนินการ</span>
+                            </label>
+                            <select id="subnav-project-status-selector" class="form-control" style="font-size: 11.5px; padding: 6px; height: auto; font-weight: 600; border-radius: var(--radius-sm); background-color: #f8fafc;">
+                                <option value="งานที่กำลังดำเนินการ">🟢 งานที่กำลังดำเนินการ</option>
+                                <option value="งานที่ดำเนินการเสร็จแล้ว">✅ งานที่ดำเนินการเสร็จแล้ว</option>
+                                <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">🔵 งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
+                                <option value="งานที่รอเสนอราคา">🟠 งานที่รอเสนอราคา</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- App Header -->
+            <header class="main-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button id="btn-toggle-sidebar" class="btn btn-sm btn-outline hide-desktop" style="font-size: 16px; padding: 6px 12px; border: none; background: transparent;">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="header-title-group">
+                        <h1 class="header-title">ระบบจัดการโครงการ (Project Management System)</h1>
+                        <p class="header-subtitle" style="font-size: 11.5px; margin-top: 1px; color: var(--text-muted); font-weight: 500;">สำหรับบริษัท (Web Application)</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions" style="display: flex; align-items: center; gap: 16px;">
+                    <!-- Real-time Sync Indicator Badge -->
+                    <div id="sync-status-badge" class="sync-badge clean" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 50px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; cursor: pointer; transition: all 0.2s;">
+                        <i class="fa-solid fa-cloud" id="sync-icon"></i>
+                        <span id="sync-text">คลาวด์เชื่อมต่ออยู่</span>
+                    </div>
+
+                    <!-- Notification Bell -->
+                    <div id="notif-bell-container" style="position: relative; cursor: pointer;">
+                        <i class="fa-solid fa-bell" style="font-size: 18px; color: var(--navy-dark); transition: transform 0.2s;"></i>
+                        <span id="notif-count-badge" style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; display: none; align-items: center; justify-content: center; border: 2px solid #fff; padding: 0 4px;">0</span>
+                        
+                        <!-- Notification Panel Dropdown -->
+                        <div id="notif-panel" style="display: none; position: absolute; top: 120%; right: -10px; width: 340px; background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 1010; padding: 12px 0;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 16px 8px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px;">
+                                <strong style="font-size: 13.5px; color: var(--navy-dark);"><i class="fa-solid fa-bell" style="color: var(--primary-blue-light);"></i> รายการแจ้งเตือน</strong>
+                                <button id="btn-clear-notif" style="font-size: 11px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-family: 'Prompt'; font-weight: 600;">ล้างทั้งหมด</button>
+                            </div>
+                            <div id="notif-list-container" style="max-height: 280px; overflow-y: auto; padding: 0 8px;">
+                                <!-- Dynamically populated notifications -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Account / Role switcher -->
+                    <div class="user-profile" id="user-profile-menu-btn" style="display: flex; align-items: center; gap: 8px; cursor: pointer; position: relative;">
+                        <img id="header-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="avatar-image" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--primary-blue-light);">
+                        <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
+                            <span class="user-name" id="header-user-name" style="font-size: 12.5px; font-weight: 700; color: var(--navy-dark);">Project Manager</span>
+                            <span class="user-role" id="header-user-role" style="font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Project Manager</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;"></i>
+                        
+                        <!-- Role Switch Dropdown Panel -->
+                        <div id="user-role-dropdown" style="display: none; position: absolute; top: 120%; right: 0; width: 230px; background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 1010; padding: 8px 0; font-family: 'Prompt', sans-serif;">
+                            <div style="padding: 10px 16px 12px 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+                                <img id="dropdown-user-avatar" src="" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <strong id="dropdown-user-displayname" style="font-size: 13px; color: var(--navy-dark);">Username</strong>
+                                    <span id="dropdown-user-role-display" style="font-size: 10px; color: var(--text-muted); font-weight: 600;">Role</span>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 0 12px 4px 12px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">สลับสิทธิ์การใช้งาน (Roles)</div>
+                            <div id="role-menu-items">
+                                <!-- Roles populated dynamically -->
+                            </div>
+                            <div style="border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 4px;">
+                                <a href="#" id="logout-btn" style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: #ef4444; text-decoration: none; font-size: 12.5px; font-weight: 600; transition: background 0.15s;">
+                                    <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Project Detail Workspace Subnav Tabs -->
+            <div id="project-workspace-tabs-bar" style="{% if active_project %}display: block;{% else %}display: none;{% endif %}; background: #fff; border-bottom: 1.5px solid var(--border-color); padding: 0 24px; position: sticky; top: 0; z-index: 100;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                    <nav class="subnav-tabs" style="margin-bottom: 0; border-bottom: none; gap: 6px;">
+                        <a href="/project/info?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'info' %}active{% endif %}">
+                            <i class="fa-solid fa-circle-info"></i> ข้อมูลโครงการ
+                        </a>
+                        <a href="/project/gantt?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'gantt' %}active{% endif %}">
+                            <i class="fa-solid fa-calendar-check"></i> Plan Work
+                        </a>
+                        <a href="/project/actual?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'actual' %}active{% endif %}">
+                            <i class="fa-solid fa-bars-progress"></i> Actual Progress
+                        </a>
+                        <a href="/project/daily-report?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'daily' %}active{% endif %}">
+                            <i class="fa-solid fa-file-signature"></i> Daily Report
+                        </a>
+                        <a href="/project/photos?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'photos' %}active{% endif %}">
+                            <i class="fa-solid fa-images"></i> รูปภาพ / ไฟล์
+                        </a>
+                        <a href="/project/expenses?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'expenses' %}active{% endif %} hide-customer">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> ค่าใช้จ่ายโครงการ
+                        </a>
+                        <a href="/project/documents?project={{ active_project }}" class="subnav-tab-item {% if active_subpage == 'documents' %}active{% endif %}">
+                            <i class="fa-solid fa-file-invoice"></i> เอกสารโครงการ
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-wrapper" style="padding: 24px;">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    {% include 'modals.html' %}
+
+    <!-- Scripts -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/gantt.js"></script>
+    <script src="/static/js/main.js"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

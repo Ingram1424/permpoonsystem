@@ -1,0 +1,836 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+            <div id="dashboard-view" class="view-panel active">
+                
+                <!-- Section 1: Dashboard ภาพรวมทั้งหมดทุกโปรเจค -->
+                <section class="section-card overall-dashboard hide-customer">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <div>
+                                <h2 class="section-title">Dashboard ภาพรวมทั้งหมดทุกโปรเจค</h2>
+                                <p class="section-subtitle">แสดงภาพรวมทุกโครงการ และสรุปสถานะของงานทั้งหมด</p>
+                            </div>
+                        </div>
+                        <div class="filter-wrapper" style="display: flex; align-items: center; gap: 8px;">
+                            <label for="year-filter-a">เปรียบเทียบปี :</label>
+                            <div class="custom-select-wrapper" style="min-width: 115px;">
+                                <select id="year-filter-a" class="form-control">
+                                    <option value="all">ทั้งหมดทุกปี</option>
+                                    <option value="2024">ปี 2024</option>
+                                    <option value="2025" selected>ปี 2025</option>
+                                    <option value="2026">ปี 2026</option>
+                                </select>
+                            </div>
+                            <label for="year-filter-b">กับปี :</label>
+                            <div class="custom-select-wrapper" style="min-width: 115px;">
+                                <select id="year-filter-b" class="form-control">
+                                    <option value="all">ทั้งหมดทุกปี</option>
+                                    <option value="2024">ปี 2024</option>
+                                    <option value="2025">ปี 2025</option>
+                                    <option value="2026" selected>ปี 2026</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Grid -->
+                    <div class="kpi-grid">
+                        <!-- KPI 1 -->
+                        <div class="kpi-card blue">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-folder-tree"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">งาน PO ทั้งหมด</span>
+                                <h3 class="kpi-value" id="kpi-total-jobs">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        <!-- KPI 2 -->
+                        <div class="kpi-card green">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-play"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">งานที่กำลังดำเนินการ</span>
+                                <h3 class="kpi-value" id="kpi-inprogress-jobs">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        <!-- KPI 2.5: งานที่ดำเนินการเสร็จแล้ว -->
+                        <div class="kpi-card purple-finished">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">งานที่ดำเนินการเสร็จแล้ว</span>
+                                <h3 class="kpi-value" id="kpi-finished-jobs">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        <!-- KPI 3 -->
+                        <div class="kpi-card teal">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">งานเสร็จแล้วรอส่งงาน/อนุมัติ</span>
+                                <h3 class="kpi-value" id="kpi-completed-jobs">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        <!-- KPI 4 -->
+                        <div class="kpi-card orange">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-pause"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">งานที่รอเสนอราคา</span>
+                                <h3 class="kpi-value" id="kpi-pending-approval-jobs">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        <!-- KPI 5: จำนวนสาขาทั้งหมด -->
+                        <div class="kpi-card purple">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-hospital"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">จำนวนสาขาทั้งหมด <i class="fa-solid fa-circle-info" style="font-size: 10px; opacity: 0.7;"></i></span>
+                                <h3 class="kpi-value" id="kpi-total-branches">12</h3>
+                                <span class="kpi-unit">สาขา</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Analytics Grid -->
+                    <div class="analytics-grid">
+                        <!-- Bar Chart -->
+                        <div class="chart-container-card span-3">
+                            <h4 class="chart-title">สรุปโครงการแยกตามโรงพยาบาล</h4>
+                            <div class="chart-wrapper" style="height: 320px;">
+                                <canvas id="overallBarChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Donut Chart -->
+                        <div class="chart-container-card span-1">
+                            <h4 class="chart-title">สถานะภาพรวมของโครงการ</h4>
+                            <div class="chart-wrapper donut-wrapper" style="height: 320px; display: flex; align-items: center; justify-content: center;">
+                                <canvas id="overallDonutChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Progress & Financial Card (Wide layout) -->
+                        <div class="chart-container-card span-4" style="margin-top: 8px;">
+                            <div style="display: grid; grid-template-columns: 1.2fr 1.3fr 1.5fr; gap: 24px; align-items: start;">
+                                <!-- Left Column: Dropdowns -->
+                                <div style="display: flex; flex-direction: column; gap: 12px; padding-right: 20px; border-right: 1px solid var(--border-color);">
+                                    <h4 class="chart-title" style="margin-bottom: 4px;">ตัวเลือกการกรองข้อมูล</h4>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size: 11px; font-weight: 700; color: var(--navy-medium);">เลือกโรงพยาบาล</label>
+                                        <select id="kpi-filter-hospital" class="form-control" style="font-size: 12px; padding: 6px 10px;">
+                                            <option value="all">ทั้งหมดทุกโรงพยาบาล</option>
+                                            <option value="โรงพยาบาลพญาไท 1">โรงพยาบาลพญาไท 1</option>
+                                            <option value="โรงพยาบาลพญาไท 2">โรงพยาบาลพญาไท 2</option>
+                                            <option value="โรงพยาบาลพญาไท 3">โรงพยาบาลพญาไท 3</option>
+                                            <option value="โรงพยาบาลพญาไท นวมินทร์">โรงพยาบาลพญาไท นวมินทร์</option>
+                                            <option value="โรงพยาบาลพญาไท บ่อวิน">โรงพยาบาลพญาไท บ่อวิน</option>
+                                            <option value="โรงพยาบาลพญาไท พหลโยธิน">โรงพยาบาลพญาไท พหลโยธิน</option>
+                                            <option value="โรงพยาบาลพญาไท ศรีราชา">โรงพยาบาลพญาไท ศรีราชา</option>
+                                            <option value="โรงพยาบาลเปาโล พระประแดง">โรงพยาบาลเปาโล พระประแดง</option>
+                                            <option value="โรงพยาบาลเปาโล รังสิต">โรงพยาบาลเปาโล รังสิต</option>
+                                            <option value="โรงพยาบาลเปาโล สมุทรปราการ">โรงพยาบาลเปาโล สมุทรปราการ</option>
+                                            <option value="โรงพยาบาลเปาโล เกษตร">โรงพยาบาลเปาโล เกษตร</option>
+                                            <option value="โรงพยาบาลเปาโล โชคชัย 4">โรงพยาบาลเปาโล โชคชัย 4</option>
+                                            <option value="อื่นๆ">อื่นๆ</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-size: 11px; font-weight: 700; color: var(--navy-medium);">เลือกโครงการ</label>
+                                        <select id="kpi-filter-project" class="form-control" style="font-size: 12px; padding: 6px 10px;">
+                                            <option value="all">ทั้งหมดทุกโครงการ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Middle Column: Progress -->
+                                <div style="padding-right: 20px; border-right: 1px solid var(--border-color);">
+                                    <h4 class="chart-title">ความก้าวหน้าโครงการ</h4>
+                                    <div class="progress-section" style="margin-top: 16px;">
+                                        <div class="progress-item-group">
+                                            <div class="progress-text-label">
+                                                <span>แผนงาน (Planned)</span>
+                                                <span class="progress-val-text" id="prog-planned-text">0%</span>
+                                            </div>
+                                            <div class="progress-bar-bg">
+                                                <div class="progress-bar-fill blue-fill" id="prog-planned-bar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-item-group" style="margin-top: 20px;">
+                                            <div class="progress-text-label">
+                                                <span>ผลงานจริง (Actual)</span>
+                                                <span class="progress-val-text" id="prog-actual-text">0%</span>
+                                            </div>
+                                            <div class="progress-bar-bg">
+                                                <div class="progress-bar-fill green-fill" id="prog-actual-bar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right Column: Financials -->
+                                <div>
+                                    <h4 class="chart-title">สรุปค่าใช้จ่ายโครงการ</h4>
+                                    <div class="financial-summary-widget hide-customer" style="margin-top: 8px;">
+                                        <div class="fin-row">
+                                            <div class="fin-box" style="padding: 10px;">
+                                                <span class="fin-lbl">ต้นทุนรวม</span>
+                                                <span class="fin-val text-navy" id="fin-cost-summary">0</span>
+                                                <span class="fin-unit">บาท</span>
+                                            </div>
+                                            <div class="fin-box hide-pm" style="padding: 10px;">
+                                                <span class="fin-lbl">กำไร</span>
+                                                <span class="fin-val text-green" id="fin-profit-summary">0</span>
+                                                <span class="fin-unit">บาท</span>
+                                            </div>
+                                        </div>
+                                        <div class="fin-row mt-2">
+                                            <div class="fin-box" style="padding: 10px;">
+                                                <span class="fin-lbl">ขาดทุน</span>
+                                                <span class="fin-val text-muted" id="fin-loss-summary">-</span>
+                                                <span class="fin-unit">บาท</span>
+                                            </div>
+                                            <div class="fin-box highlighted-profit hide-pm" style="padding: 10px;">
+                                                <span class="fin-lbl">กำไรสุทธิ</span>
+                                                <span class="fin-val text-orange" id="fin-netprofit-summary">0</span>
+                                                <span class="fin-unit">บาท</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="only-customer text-center py-4 text-muted font-sm">
+                                        <i class="fa-solid fa-eye-slash mb-2 fs-4"></i>
+                                        <p>ไม่ได้รับสิทธิ์ให้เห็นข้อมูลต้นทุนและค่าใช้จ่าย</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 1.5: สถานะแยกตามโครงการโรงพยาบาล (Hospitals Grid) -->
+                <section class="section-card hospitals-grid-section">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <div>
+                                <h2 class="section-title">สถานะแยกตามโครงการโรงพยาบาล</h2>
+                                <p class="section-subtitle">ภาพรวมสถานะความคืบหน้าของโรงพยาบาลแต่ละสาขา</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hospitals-grid" id="hospitals-card-grid">
+                        <!-- Dynamically filled with JavaScript -->
+                    </div>
+                </section>
+            </div>
+
+            <div id="cost-view" class="view-panel">
+                
+                <!-- Cost View Main Tabs -->
+                <div class="cost-main-nav-tabs hide-customer" style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap;">
+                    <button class="cost-main-tab-btn active" id="btn-cost-main-overview" data-main-tab="overview" style="padding: 10px 20px; border: 1px solid var(--primary-blue); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 13px; font-weight: 700; cursor: pointer; background: var(--primary-blue); color: #ffffff; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                        <i class="fa-solid fa-chart-pie"></i> ภาพรวมต้นทุนสะสม
+                    </button>
+                    <button class="cost-main-tab-btn" id="btn-cost-main-projects" data-main-tab="projects" style="padding: 10px 20px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 13px; font-weight: 600; cursor: pointer; background: #ffffff; color: var(--navy-dark); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                        <i class="fa-solid fa-folder-open"></i> งบประมาณรายโครงการ
+                    </button>
+                    <button class="cost-main-tab-btn" id="btn-cost-main-approvals" data-main-tab="approvals" style="padding: 10px 20px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 13px; font-weight: 600; cursor: pointer; background: #ffffff; color: var(--navy-dark); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #7c3aed;"></i> รายการขออนุมัติเบิกจ่าย <span id="approvals-badge-count" style="display: none; background: #ef4444; color: white; border-radius: 9999px; padding: 2px 6px; font-size: 10px; font-weight: bold; margin-left: 4px; vertical-align: middle; line-height: 1;">0</span>
+                    </button>
+                </div>
+
+                <!-- Tab Panel 1: ภาพรวมต้นทุนสะสม (Overview Dashboard) -->
+                <div id="cost-main-panel-overview" class="cost-main-tab-panel">
+                    <section class="section-card cost-management-section">
+                        <!-- Part A: Cost Dashboard Overview -->
+                        <div class="cost-dashboard-overview hide-customer">
+                            <div class="section-header" style="margin-top: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                                <div class="section-title-wrapper">
+                                    <h3 class="section-title" style="font-size: 16px;"><i class="fa-solid fa-chart-pie text-blue mr-1"></i> ภาพรวมต้นทุนและงบประมาณ</h3>
+                                    <p class="section-subtitle">วิเคราะห์ภาพรวมมูลค่าสัญญาเทียบกับค่าใช้จ่ายแยกตามโรงพยาบาลและปีดำเนินงาน</p>
+                                </div>
+                                <div class="filter-wrapper">
+                                    <label for="cost-year-filter">ปีที่ดำเนินโครงการ :</label>
+                                    <div class="custom-select-wrapper" style="min-width: 130px;">
+                                        <select id="cost-year-filter" class="form-control">
+                                            <option value="all" selected>ทั้งหมดทุกปี</option>
+                                            <option value="2024">ปี 2024</option>
+                                            <option value="2025">ปี 2025</option>
+                                            <option value="2026">ปี 2026</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cost KPIs Row -->
+                            <div class="mini-kpi-grid" style="margin-bottom: 20px;">
+                                <div class="mini-kpi-card blue">
+                                    <div class="mini-icon"><i class="fa-solid fa-file-signature"></i></div>
+                                    <div class="mini-lbl-val">
+                                        <span class="lbl">มูลค่าสัญญารวม</span>
+                                        <h3 class="val" id="cost-kpi-total-value">0</h3>
+                                    </div>
+                                    <span class="unit">บาท</span>
+                                </div>
+                                <div class="mini-kpi-card orange">
+                                    <div class="mini-icon"><i class="fa-solid fa-receipt"></i></div>
+                                    <div class="mini-lbl-val">
+                                        <span class="lbl">ค่าใช้จ่ายจริงรวม</span>
+                                        <h3 class="val" id="cost-kpi-total-cost">0</h3>
+                                    </div>
+                                    <span class="unit">บาท</span>
+                                </div>
+                                <div class="mini-kpi-card green hide-pm">
+                                    <div class="mini-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                                    <div class="mini-lbl-val">
+                                        <span class="lbl">กำไรสุทธิรวม</span>
+                                        <h3 class="val" id="cost-kpi-total-profit">0</h3>
+                                    </div>
+                                    <span class="unit">บาท</span>
+                                </div>
+                                <div class="mini-kpi-card purple hide-pm">
+                                    <div class="mini-icon"><i class="fa-solid fa-percent"></i></div>
+                                    <div class="mini-lbl-val">
+                                        <span class="lbl">อัตรากำไรเฉลี่ย</span>
+                                        <h3 class="val" id="cost-kpi-margin-rate">0%</h3>
+                                    </div>
+                                    <span class="unit">Rate</span>
+                                </div>
+                            </div>
+
+                            <!-- Charts Row -->
+                            <div class="cost-charts-row" style="margin-bottom: 24px;">
+                                <div class="chart-container-card">
+                                    <h4 class="chart-title">เปรียบเทียบมูลค่าสัญญากับค่าใช้จ่ายจริงรายสาขา (Value vs Cost)</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="costOverallBarChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="chart-container-card">
+                                    <h4 class="chart-title">สัดส่วนประเภทต้นทุนภาพรวม</h4>
+                                    <div class="chart-wrapper donut-wrapper-detail">
+                                        <canvas id="costOverallDonutChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab Panel 2: งบประมาณรายโครงการ (Project Budget Detail) -->
+                <div id="cost-main-panel-projects" class="cost-main-tab-panel" style="display: none;">
+                    <section class="section-card cost-management-section">
+                        
+                        <!-- Sub-view 2.1: Project List View (Directory) -->
+                        <div id="cost-projects-list-view">
+                            <!-- Part B: Project Detail Cost Breakdown Header -->
+                            <div class="section-header" style="margin-top: 10px;">
+                                <div class="section-title-wrapper">
+                                    <div>
+                                        <h2 class="section-title">รายละเอียดงบรายโครงการ (Project Budget Detail)</h2>
+                                        <p class="section-subtitle">เลือกโครงการเพื่อตรวจสอบงบประมาณและบันทึกรายจ่ายแยกตามตารางธุรกรรม</p>
+                                    </div>
+                                </div>
+                                <div class="selectors-row-flex" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                                    <div class="form-group-inline" style="display: flex; align-items: center; gap: 6px;">
+                                        <label for="cost-detail-year-filter" class="form-label" style="font-size: 11px; font-weight: 600; color: var(--navy-medium); margin-bottom: 0; white-space: nowrap;">ปีโครงการ :</label>
+                                        <select id="cost-detail-year-filter" class="form-control" style="font-size: 12px; padding: 6px 10px; height: auto; width: 110px; background-color: var(--bg-light);">
+                                            <option value="all">ทั้งหมดทุกปี</option>
+                                            <option value="2024">ปี 2024</option>
+                                            <option value="2025">ปี 2025</option>
+                                            <option value="2026">ปี 2026</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-inline" style="display: flex; align-items: center; gap: 6px;">
+                                        <label for="cost-detail-hospital-selector" class="form-label" style="font-size: 11px; font-weight: 600; color: var(--navy-medium); margin-bottom: 0; white-space: nowrap;">เลือกโรงพยาบาล :</label>
+                                        <select id="cost-detail-hospital-selector" class="form-control" style="font-size: 12px; padding: 6px 10px; height: auto; width: 190px; background-color: var(--bg-light);">
+                                            <!-- Dynamically populated -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group-inline" style="display: flex; align-items: center; gap: 6px;">
+                                        <label for="cost-project-selector" class="form-label" style="font-size: 11px; font-weight: 600; color: var(--navy-medium); margin-bottom: 0; white-space: nowrap;">เลือกงาน/โครงการ :</label>
+                                        <select id="cost-project-selector" class="form-control" style="font-size: 12px; padding: 6px 10px; height: auto; width: 230px; background-color: var(--primary-light); color: var(--navy-dark); font-weight: 600;">
+                                            <!-- Dynamically populated -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Project Cost Summary Table -->
+                            <div class="project-cost-table-container hide-customer" style="margin-top: 24px; margin-bottom: 24px;">
+                                <h4 class="chart-title" style="margin-bottom: 12px; font-size: 13.5px; color: var(--navy-dark); font-weight: 700; border-left: 3px solid var(--primary-blue); padding-left: 6px;"><i class="fa-solid fa-list-check text-blue mr-1"></i> รายการโครงการและต้นทุน (สัญญา vs ค่าใช้จ่ายจริง)</h4>
+                                <div class="table-container" style="overflow-x: auto; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4px; box-shadow: var(--card-shadow);">
+                                    <table class="transaction-table" style="width: 100%; min-width: 900px; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: var(--navy-dark); color: #ffffff;">
+                                                <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 80px;">รหัส</th>
+                                                <th style="padding: 10px 12px; text-align: left; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600;">ชื่อโครงการ / โรงพยาบาล</th>
+                                                <th style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 140px;">มูลค่าสัญญา (Value)</th>
+                                                <th style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 140px;">ค่าใช้จ่ายจริง (Cost)</th>
+                                                <th class="hide-pm" style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 130px;">กำไรสุทธิ (Profit)</th>
+                                                <th class="hide-pm" style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 90px;">% กำไร</th>
+                                                <th style="padding: 10px 12px; text-align: left; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 150px;">ผู้รับผิดชอบ (PM)</th>
+                                                <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 110px;">สถานะ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="project-cost-summary-tbody">
+                                            <!-- Dynamically populated in JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Pagination Controls -->
+                                <div id="project-cost-pagination" style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 16px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-view 2.2: Project Single Detail View (Ledger Sheet) -->
+                        <div id="cost-project-detail-view" style="display: none;">
+                            <div class="section-header" style="margin-top: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 16px;">
+                                <div class="section-title-wrapper" style="display: flex; align-items: center; gap: 14px; width: 100%;">
+                                    <button type="button" class="btn btn-outline" id="btn-cost-back-to-list" style="font-family: 'Prompt'; font-size: 11.5px; padding: 6px 14px; border-radius: var(--radius-sm); white-space: nowrap; display: flex; align-items: center; gap: 5px; background: #ffffff; color: var(--navy-dark); border: 1px solid var(--border-color);">
+                                        <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปรายชื่อโครงการ
+                                    </button>
+                                    <div>
+                                        <h2 class="section-title" id="cost-detail-header-project-name" style="font-size: 15px; margin-bottom: 2px;">ชื่อโครงการ</h2>
+                                        <p class="section-subtitle" id="cost-detail-header-project-desc" style="font-size: 11.5px; color: var(--text-muted);">รายละเอียดโครงการ</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Specific Project Subtabs (Expenses, PO) -->
+                            <div id="cost-details-section" class="cost-nav-tabs hide-customer" style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap;">
+                                <button class="cost-tab-btn active" data-cost-tab="all-costs" style="padding: 8px 18px; border: 1px solid var(--primary-blue); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 12.5px; font-weight: 700; cursor: pointer; background: var(--primary-blue); color: #ffffff; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                                    <i class="fa-solid fa-receipt"></i> รายการค่าใช้จ่ายโครงการ
+                                </button>
+                                <button class="cost-tab-btn" data-cost-tab="po-outstanding" style="padding: 8px 18px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 12.5px; font-weight: 600; cursor: pointer; background: #ffffff; color: var(--navy-dark); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                                    <i class="fa-solid fa-file-circle-exclamation" style="color: #e53e3e;"></i> ยอด PO ค้าง
+                                </button>
+                            </div>
+
+                            <!-- Subtab Panel 1: รายการค่าใช้จ่ายโครงการ -->
+                            <div class="cost-subtab-panel" data-cost-panel="all-costs">
+                                <div class="cost-split-grid hide-customer">
+                                    <!-- Left: Cost Summary Panel -->
+                                    <div class="cost-summary-panel">
+                                        <h4 class="panel-subtitle-thai">สรุปค่าใช้จ่ายโครงการ</h4>
+                                        <div class="cost-metric-card-group">
+                                            <div class="cost-metric-row">
+                                                <span class="lbl">มูลค่าโครงการ</span>
+                                                <div class="val-group">
+                                                    <span class="val" id="cost-v-value">0</span>
+                                                    <span class="unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="cost-metric-row">
+                                                <span class="lbl">ต้นทุนรวม</span>
+                                                <div class="val-group">
+                                                    <span class="val text-navy" id="cost-v-cost">0</span>
+                                                    <span class="unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="cost-metric-row hide-pm">
+                                                <span class="lbl">กำไร</span>
+                                                <div class="val-group text-green">
+                                                    <span class="val" id="cost-v-profit">0</span>
+                                                    <span class="unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="cost-metric-row">
+                                                <span class="lbl">ขาดทุน</span>
+                                                <div class="val-group text-muted">
+                                                    <span class="val" id="cost-v-loss">-</span>
+                                                    <span class="unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="cost-metric-row highlight-net hide-pm">
+                                                <span class="lbl font-bold">กำไรสุทธิ</span>
+                                                <div class="val-group text-orange">
+                                                    <span class="val font-bold" id="cost-v-net">0</span>
+                                                    <span class="unit">บาท</span>
+                                                </div>
+                                            </div>
+                                            <div class="cost-metric-row">
+                                                <span class="lbl">% กำไร</span>
+                                                <div class="val-group">
+                                                    <span class="val badge-percent" id="cost-v-percent">0.00%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Middle: Cost Structure Donut Chart -->
+                                    <div class="cost-chart-panel">
+                                        <h4 class="panel-subtitle-thai">โครงสร้างต้นทุน</h4>
+                                        <div class="cost-donut-wrapper">
+                                            <canvas id="costStructureDonut"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Latest Expenses -->
+                                    <div class="cost-transactions-panel">
+                                        <div class="panel-header-action">
+                                            <h4 class="panel-subtitle-thai">รายการค่าใช้จ่ายล่าสุด</h4>
+                                            <button class="btn btn-sm btn-outline btn-add-expense-trigger" id="open-expense-modal-btn">
+                                                <i class="fa-solid fa-plus"></i> เพิ่มรายการ
+                                            </button>
+                                        </div>
+                                        <div class="table-container">
+                                            <table class="transaction-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>วันที่</th>
+                                                        <th>รายการ</th>
+                                                        <th>ประเภท</th>
+                                                        <th class="text-right">จำนวนเงิน (บาท)</th>
+                                                        <th class="text-center">เอกสาร</th>
+                                                        <th class="text-center action-col">จัดการ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="transaction-table-body">
+                                                    <!-- Filled dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Subtab Panel 2: ยอด PO ค้าง -->
+                            <div class="cost-subtab-panel" data-cost-panel="po-outstanding" style="display: none;">
+                                <div style="overflow-x: auto; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4px; box-shadow: var(--card-shadow);">
+                                    <table class="transaction-table" id="po-outstanding-table" style="min-width: 900px; width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                                                <th style="width: 50px; text-align: center; color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px;">ลำดับ</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">โรงพยาบาล</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">วันที่ PO ออก</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">เลขที่ใบเสนอราคา</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">เลขที่ใบสั่งซื้อ / PO</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">ชื่องาน</th>
+                                                <th style="color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">สถานที่</th>
+                                                <th style="text-align: center; color: #92400e; font-size: 12px; font-weight: 600; padding: 10px 12px; width: 80px;">จัดการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="po-outstanding-tbody">
+                                            <tr id="po-empty-row">
+                                                <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 32px; font-style: italic;">
+                                                    <i class="fa-solid fa-inbox" style="font-size: 24px; display: block; margin-bottom: 8px; opacity: 0.4;"></i>
+                                                    ยังไม่มีรายการ PO ค้าง
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="only-customer text-center py-5 text-muted">
+                            <i class="fa-solid fa-eye-slash mb-3 fs-1 text-danger"></i>
+                            <h3>ไม่มีสิทธิ์เข้าถึงหน้านี้</h3>
+                            <p class="max-w-md mx-auto mt-2">ในฐานะลูกค้า (Customer) ข้อมูลทางการเงิน เช่น ต้นทุนของโครงการ โครงสร้างต้นทุน และรายละเอียดธุรกรรมจะถูกปิดกั้นเพื่อรักษาความลับทางการค้า</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab Panel 3: รายการขออนุมัติเบิกจ่าย (Approvals View) -->
+                <div id="cost-main-panel-approvals" class="cost-main-tab-panel" style="display: none;">
+                    
+                    <!-- Approvals Dashboard -->
+                    <div class="kpi-grid hide-customer" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+                        <!-- KPI 1: All Requests -->
+                        <div class="kpi-card blue" id="btn-approval-filter-all" style="cursor: pointer; transition: all 0.2s ease;" onclick="setApprovalFilter('all')">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-file-invoice"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">คำขออนุมัติทั้งหมด</span>
+                                <h3 class="kpi-value" id="kpi-approval-total">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        
+                        <!-- KPI 2: Approved -->
+                        <div class="kpi-card green" id="btn-approval-filter-approved" style="cursor: pointer; transition: all 0.2s ease;" onclick="setApprovalFilter('อนุมัติแล้ว')">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">อนุมัติแล้ว</span>
+                                <h3 class="kpi-value" id="kpi-approval-approved">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        
+                        <!-- KPI 3: Pending -->
+                        <div class="kpi-card orange" id="btn-approval-filter-pending" style="cursor: pointer; transition: all 0.2s ease;" onclick="setApprovalFilter('รออนุมัติ')">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">รออนุมัติ</span>
+                                <h3 class="kpi-value" id="kpi-approval-pending">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                        
+                        <!-- KPI 4: Rejected -->
+                        <div class="kpi-card red" id="btn-approval-filter-rejected" style="cursor: pointer; transition: all 0.2s ease;" onclick="setApprovalFilter('ปฏิเสธ')">
+                            <div class="kpi-icon-container">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <span class="kpi-label">ไม่อนุมัติ</span>
+                                <h3 class="kpi-value" id="kpi-approval-rejected">0</h3>
+                                <span class="kpi-unit">รายการ</span>
+                            </div>
+                            <div class="kpi-glow"></div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Disbursement Approvals -->
+                    <section class="section-card hide-customer">
+                        <div class="section-header" style="margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px;">
+                            <div class="section-title-wrapper">
+                                <div>
+                                    <h2 class="section-title"><i class="fa-solid fa-paper-plane" style="color: #0f52ba;"></i> คำขออนุมัติเบิกจ่ายเงินโครงการ</h2>
+                                    <p class="section-subtitle">รายการเบิกจ่ายงบประมาณโครงการที่ PM ส่งเข้ามาเพื่อขออนุมัติจากบัญชี</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 4px; box-shadow: var(--card-shadow);">
+                            <table class="transaction-table" id="disbursement-pending-table" style="min-width: 960px; width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: linear-gradient(135deg, #e0f2fe, #bae6fd);">
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left; white-space: nowrap;">วันที่ขอเบิก</th>
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">โครงการ</th>
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">รายการค่าใช้จ่าย</th>
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: left;">ประเภท</th>
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: center;">เอกสารอ้างอิง</th>
+                                        <th style="color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; text-align: right;">จำนวนเงิน</th>
+                                        <th style="text-align: center; color: #0369a1; font-size: 12px; font-weight: 600; padding: 10px 12px; width: 160px;">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="disbursement-pending-tbody">
+                                    <tr id="disbursement-empty-row">
+                                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px; font-style: italic;">
+                                            <i class="fa-solid fa-inbox" style="font-size: 24px; display: block; margin-bottom: 8px; opacity: 0.4;"></i>
+                                            ยังไม่มีรายการขอเบิกจ่ายรออนุมัติ
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+
+            <div id="permissions-mgmt-view" class="view-panel">
+                <section class="section-card">
+                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-user-shield text-blue mr-2"></i> ระบบจัดการสิทธิ์ผู้ใช้งาน และ เจนบัญชีลูกค้า (User Accounts & Permissions)</h2>
+                            <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">สร้าง Username + Password และกำหนดสิทธิ์ให้ลูกค้าเข้ามาดูโครงการย่อยเฉพาะที่ได้รับสิทธิ์</span>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btn-open-create-customer-modal" onclick="window.openCreateCustomerModal()" style="font-family: 'Prompt'; font-size: 12px; padding: 8px 16px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-user-plus"></i> เจนบัญชีลูกค้าใหม่ (User & Pass)
+                        </button>
+                    </div>
+
+                    <!-- Customer Accounts Table Container (Scrollable showing ~3 rows with search) -->
+                    <div style="margin-top: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #ffffff; overflow: hidden; box-shadow: var(--shadow-sm);">
+                        <div style="background: var(--bg-light); padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <h4 style="font-size: 13px; font-weight: 700; color: var(--navy-dark); margin: 0;">
+                                <i class="fa-solid fa-users-gear text-blue mr-1"></i> ตารางรายการบัญชีลูกค้า (Customer Accounts & Passwords)
+                            </h4>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="position: relative;">
+                                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-muted);"></i>
+                                    <input type="text" id="search-customer-accounts" class="form-control" placeholder="พิมพ์ค้นหาชื่อ / Username..." style="padding-left: 28px; font-size: 11.5px; height: 30px; width: 220px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: 'Prompt';" oninput="window.renderCustomerAccountsTable()">
+                                </div>
+                                <span style="font-size: 11px; color: var(--text-muted);">กด "คัดลอก" เพื่อส่งให้ลูกค้า</span>
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto; overflow-y: auto; max-height: 450px; scrollbar-width: thin;">
+                            <table class="transaction-table" id="customer-accounts-table" style="width: 100%; min-width: 750px;">
+                                <thead style="position: sticky; top: 0; z-index: 2; background: #f8fafc; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">ลำดับ</th>
+                                        <th>ชื่อบัญชีลูกค้า / บริษัท</th>
+                                        <th>Username</th>
+                                        <th>Password</th>
+                                        <th style="text-align: center;">สิทธิ์ที่ได้รับ</th>
+                                        <th style="text-align: center; width: 240px;">จัดการ & คัดลอก</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customer-accounts-tbody">
+                                    <!-- Filled dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 24px;">
+                        <!-- Select User to Manage Permissions -->
+                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <label style="font-weight: 700; color: var(--navy-dark); font-size: 13.5px; white-space: nowrap; margin: 0;">
+                                    <i class="fa-solid fa-sliders text-blue mr-1"></i> เลือกบัญชีลูกค้าเพื่อปรับเปลี่ยนสิทธิ์:
+                                </label>
+                                <select id="perm-user-selector" class="form-control" style="max-width: 340px; font-family: 'Prompt'; font-weight: 600; background: #ffffff;">
+                                    <!-- Filled dynamically -->
+                                </select>
+                            </div>
+                            <span id="perm-current-user-info" style="font-size: 11.5px; font-weight: 600; color: var(--primary-blue); background: #ffffff; padding: 4px 12px; border-radius: 20px; border: 1px solid #93c5fd;">
+                                <!-- Current user info summary -->
+                            </span>
+                        </div>
+
+                        <!-- 2 Columns Checklist Layout -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <!-- Column 1: Allowed Hospitals -->
+                            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #ffffff; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--card-shadow);">
+                                <div style="background: var(--bg-light); padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                                    <h4 style="font-size: 13.5px; font-weight: 700; color: var(--navy-dark); margin: 0;">
+                                        <i class="fa-solid fa-square-check text-blue mr-1"></i> สิทธิ์เข้าถึงโรงพยาบาล (Allowed Hospitals)
+                                    </h4>
+                                    <button type="button" id="btn-toggle-all-hospitals" class="btn btn-xs btn-outline-blue" style="font-size: 10px; padding: 2px 6px; cursor: pointer;">เลือกทั้งหมด</button>
+                                </div>
+                                <div id="perm-hospitals-checkbox-list" style="padding: 16px; display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; scrollbar-width: thin;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Allowed Projects -->
+                            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #ffffff; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--card-shadow);">
+                                <div style="background: var(--bg-light); padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                                    <h4 style="font-size: 13.5px; font-weight: 700; color: var(--navy-dark); margin: 0;">
+                                        <i class="fa-solid fa-folder-tree text-blue mr-1"></i> สิทธิ์เข้าถึงโครงการรายชิ้น (Allowed Projects)
+                                    </h4>
+                                    <button type="button" id="btn-toggle-all-projects" class="btn btn-xs btn-outline-blue" style="font-size: 10px; padding: 2px 6px; cursor: pointer;">เลือกทั้งหมด</button>
+                                </div>
+                                <div id="perm-projects-checkbox-list" style="padding: 16px; display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; scrollbar-width: thin;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Control Actions -->
+                        <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px;">
+                            <button type="button" id="btn-reset-permissions" class="btn btn-outline" style="font-family: 'Prompt'; font-size: 12px; padding: 8px 18px; cursor: pointer;">รีเซ็ตสิทธิ์เริ่มต้น</button>
+                            <button type="button" id="btn-save-permissions" class="btn btn-primary" style="font-family: 'Prompt'; font-size: 12px; padding: 8px 24px; background: linear-gradient(135deg, var(--primary-blue), #0d47a1); border: none; cursor: pointer;">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกการมอบสิทธิ์
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="projects-list-view" class="view-panel">
+                <!-- 1. Selection Portal (Visible when selectedDetailProject === "all" and showCumulativeOverview is false) -->
+                <div id="project-selection-portal" style="padding: 24px; display: none; flex-direction: column; gap: 24px; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 16px;">
+                        <div>
+                            <h2 style="font-size: 22px; font-weight: 800; color: var(--navy-dark); margin: 0; display: flex; align-items: center; gap: 10px;">
+                                <i class="fa-solid fa-hospital-user" style="color: var(--primary-blue);"></i>
+                                <span>ระบบเลือกและบริหารโครงการ</span>
+                            </h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0 0;">กรุณาเลือกปีโครงการ โรงพยาบาล หรือพิมพ์ค้นหาโครงการด้านล่าง เพื่อเข้าหน้าทำงานและระบายสีแผนงาน</p>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button class="btn btn-sm btn-outline hide-customer" id="btn-portal-share-projects" style="font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border-color); color: #1e3a8a;">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                <span>สร้างลิงก์แชร์โครงการ</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline hide-customer" id="btn-show-cumulative-dashboard" style="font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border-color);">
+                                <i class="fa-solid fa-chart-column" style="color: var(--primary-blue);"></i>
+                                <span>ดูภาพรวมสะสมทุกโครงการ</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Grid filters & Search panel -->
+                    <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px; background: #ffffff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); width: 100%;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; width: 100%;">
+                            <!-- Year Selector -->
+                            <div>
+                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">ปีโครงการ :</label>
+                                <select id="portal-year-filter" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
+                                    <option value="all" selected>ทั้งหมดทุกปี</option>
+                                    <option value="2024">ปี 2024 (พ.ศ. 2567)</option>
+                                    <option value="2025">ปี 2025 (พ.ศ. 2568)</option>
+                                    <option value="2026">ปี 2026 (พ.ศ. 2569)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Hospital Selector -->
+                            <div>
+                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">เลือกโรงพยาบาล :</label>
+                                <select id="portal-hospital-selector" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
+                                    <option value="all" selected>ทั้งหมดทุกโรงพยาบาล</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Project Select Dropdown -->
+                            <div>
+                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">เลือกงาน/โครงการ :</label>
+                                <select id="portal-project-dropdown" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
+                                    <option value="">-- เลือกโครงการ --</option>
+                                </select>
+                            </div>
+
+                            <!-- Status Selector -->
+                            <div>
+                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">สถานะโครงการ :</label>
+                                <select id="portal-status-filter" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
+                                    <option value="all" selected>ทั้งหมดทุกสถานะ</option>
+                                    <option value="งานที่กำลังดำเนินการ">🟢 งานที่กำลังดำเนินการ</option>
+                                    <option value="งานที่ดำเนินการเสร็จแล้ว">✅ งานที่ดำเนินการเสร็จแล้ว</option>
+                                    <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">🔵 งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
+                                    <option value="งานที่รอเสนอราคา">🟠 งานที่รอเสนอราคา</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Search text field -->
+                        <div style="position: relative; width: 100%; border-top: 1px dashed var(--border-color); padding-top: 16px;">
+                            <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">พิมพ์ค้นหาโครงการ :</label>
+                            <div style="position: relative; width: 100%;">
+                                <input type="text" id="portal-project-search" class="form-control" placeholder="ค้นหาด้วยรหัสโครงการ, ชื่องาน, ชื่อโรงพยาบาล หรือปีโครงการ..." style="font-size: 13.5px; padding: 10px 42px 10px 14px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;" autocomplete="off">
+                                <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Grid -->
+                    <div style="margin-top: 10px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--navy-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                            <i class="fa-solid fa-folder-tree" style="color: var(--primary-blue);"></i>
+                            <span>โครงการตามการค้นหา (<span id="portal-projects-count" style="color: var(--primary-blue); font-weight: 800;">0</span> รายการ)</span>
+                        </h3>
+                        <div id="portal-projects-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}รายงานประจำวัน {{ active_project }} - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+                        <!-- Subtab 4: Daily Report -->
+                        <div id="subtab-daily-report-view" class="subtab-panel">
+                            <section class="section-card">
+                                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+                                    <h2 class="section-title"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> รายงานการปฏิบัติงานรายวัน (Daily Site Report)</h2>
+                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="subnav-open-daily-report-modal-btn">
+                                        <i class="fa-solid fa-file-signature"></i> อัปโหลดรายงานรายวัน
+                                    </button>
+                                </div>
+                                <!-- Filter Sub-tabs for Daily Report -->
+                                <div class="daily-report-filter-tabs" style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                    <button class="dr-filter-btn active" data-filter="all" style="padding: 6px 14px; border: 1px solid var(--primary-blue); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 11.5px; font-weight: 700; cursor: pointer; background: var(--primary-blue); color: #ffffff; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease; border-color: var(--primary-blue);">
+                                        <i class="fa-solid fa-list"></i> ทั้งหมด (<span id="dr-count-all">0</span>)
+                                    </button>
+                                    <button class="dr-filter-btn" data-filter="signed" style="padding: 6px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 11.5px; font-weight: 600; cursor: pointer; background: #ffffff; color: var(--navy-dark); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                                        <i class="fa-solid fa-file-signature" style="color: #10b981;"></i> ลูกค้าเซ็นแล้ว (<span id="dr-count-signed">0</span>)
+                                    </button>
+                                    <button class="dr-filter-btn" data-filter="unsigned" style="padding: 6px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: 'Prompt'; font-size: 11.5px; font-weight: 600; cursor: pointer; background: #ffffff; color: var(--navy-dark); display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                                        <i class="fa-solid fa-file-circle-exclamation" style="color: #f59e0b;"></i> ยังไม่เซ็น (<span id="dr-count-unsigned">0</span>)
+                                    </button>
+                                </div>
+                                <div class="daily-report-feed" id="project-daily-reports-container">
+                                    <!-- Populated dynamically in app.js -->
+                                </div>
+                            </section>
+                        </div>
+                        
+
+{% endblock %}

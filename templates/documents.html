@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}เอกสารโครงการ {{ active_project }} - ระบบจัดการโครงการ{% endblock %}
+{% block content %}
+                        <!-- Subtab 7: Documents (เอกสารโครงการ) -->
+                        <div id="subtab-documents-tab-view" class="subtab-panel">
+                            <div class="doc-split-grid-subtab">
+                                <!-- Left: General Info Sheet -->
+                                <div class="general-info-sheet">
+                                    <h4 class="sheet-title">ข้อมูลโครงการทั่วไป</h4>
+                                    <div class="info-table">
+                                        <div class="info-row">
+                                            <div class="info-col label">รหัสโครงการ</div>
+                                            <div class="info-col val" id="subnav-doc-code">PRJ-2401</div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-col label">ชื่อโครงการ</div>
+                                            <div class="info-col val" id="subnav-doc-name">-</div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-col label">ลูกค้า</div>
+                                            <div class="info-col val" id="subnav-doc-customer">-</div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-col label">ผู้จัดการโครงการ</div>
+                                            <div class="info-col val" id="subnav-doc-pm">-</div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-col label">ระยะเวลาสัญญา</div>
+                                            <div class="info-col val" id="subnav-doc-dates">-</div>
+                                        </div>
+                                        <div class="info-row hide-customer">
+                                            <div class="info-col label">มูลค่าโครงการ</div>
+                                            <div class="info-col val highlight-val" id="subnav-doc-value">0 บาท</div>
+                                        </div>
+                                        <div class="info-row">
+                                            <div class="info-col label">รายละเอียดโครงการ</div>
+                                            <div class="info-col val text-muted font-sm" id="subnav-doc-desc">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right: Documents Table Sheet -->
+                                <div class="documents-table-sheet">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="sheet-title mb-0">เอกสารสัญญา & BOQ / PO</h4>
+                                        <div class="doc-tab-filters" id="subtab-doc-tab-filters">
+                                            <button class="doc-filter-btn active" data-filter="all">ทั้งหมด</button>
+                                            <button class="doc-filter-btn" data-filter="Contract">สัญญา</button>
+                                            <button class="doc-filter-btn" data-filter="BOQ">BOQ</button>
+                                            <button class="doc-filter-btn" data-filter="PO">PO</button>
+                                            <button class="doc-filter-btn" data-filter="Drawings">แบบแปลน</button>
+                                        </div>
+                                    </div>
+                                    <div class="table-container shadow-sm border-rounded-md" style="max-height: 250px; overflow-y: auto;">
+                                        <table class="doc-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ชื่อไฟล์เอกสาร</th>
+                                                    <th>ประเภท</th>
+                                                    <th>วันที่อัปโหลด</th>
+                                                    <th class="text-right">ดาวน์โหลด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="subtab-documents-table-body">
+                                                <!-- Dynamically filled -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary mt-3 btn-add-doc-trigger hide-customer" id="subtab-open-upload-modal-btn-doc">
+                                        <i class="fa-solid fa-plus"></i> อัปโหลดเอกสาร
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </main>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Upload Document Modal -->
+
+{% endblock %}
