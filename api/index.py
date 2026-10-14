@@ -225,6 +225,14 @@ async def get_projects():
             code = row[0] if isinstance(row, tuple) else row["code"]
             raw_data = row[1] if isinstance(row, tuple) else row["data"]
             data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
+            if isinstance(data, dict):
+                data.setdefault("expenses", [])
+                data.setdefault("tasks", [])
+                data.setdefault("plans", [])
+                data.setdefault("dailyReports", [])
+                data.setdefault("media", [])
+                data.setdefault("costStructure", {"labor": 33.3, "material": 33.3, "other": 33.4})
+                data.setdefault("jobs", {"total": 0, "inprogress": 0, "completed": 0, "delayed": 0})
             projects[code] = data
             
         # If DB is empty, seed initial Permpoon projects

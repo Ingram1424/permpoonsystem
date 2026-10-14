@@ -13,10 +13,7 @@
     <!-- Error boundary for debugging JS errors on the user side -->
     <script>
         window.addEventListener('error', function(e) {
-            const errDiv = document.createElement('div');
-            errDiv.style = "position:fixed;top:0;left:0;width:100%;background:#ef4444;color:#fff;padding:12px;z-index:999999;font-family:monospace;font-size:12px;box-shadow:0 4px 6px rgba(0,0,0,0.1);";
-            errDiv.innerHTML = '<strong>Javascript Error Caught:</strong> ' + e.message + ' at ' + e.filename + ':' + e.lineno;
-            document.body.appendChild(errDiv);
+            console.error('Javascript Error Caught:', e.message, 'at', e.filename + ':' + e.lineno);
         });
     </script>
     <!-- Chart.js for beautiful interactive visualizations -->
@@ -6269,6 +6266,31 @@ try {
     console.warn("Purge legacy TW data error:", e);
 }
 
+function normalizeProjectDefaults(p) {
+    if (!p) return p;
+    if (!Array.isArray(p.expenses)) p.expenses = [];
+    if (!Array.isArray(p.tasks)) p.tasks = [];
+    if (!Array.isArray(p.plans)) p.plans = [];
+    if (!Array.isArray(p.dailyReports)) p.dailyReports = [];
+    if (!Array.isArray(p.media)) p.media = [];
+    if (!p.costStructure || typeof p.costStructure !== "object") {
+        p.costStructure = { labor: 33.3, material: 33.3, other: 33.4 };
+    }
+    if (!p.jobs || typeof p.jobs !== "object") {
+        p.jobs = { total: 0, inprogress: 0, completed: 0, delayed: 0 };
+    }
+    if (!p.workBreakdown || typeof p.workBreakdown !== "object") {
+        p.workBreakdown = {
+            categories: ["งานระบบไฟฟ้า", "งานระบบปรับอากาศ", "งานระบบสุขาภิบาล", "งานโครงสร้าง", "งานสถาปัตย์", "งานอื่นๆ"],
+            total: [0, 0, 0, 0, 0, 0],
+            inprogress: [0, 0, 0, 0, 0, 0],
+            completed: [0, 0, 0, 0, 0, 0],
+            delayed: [0, 0, 0, 0, 0, 0]
+        };
+    }
+    return p;
+}
+
 let projectsData = {};
 try {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -6286,20 +6308,23 @@ try {
                         parsed[k].isSynced = true;
                     }
                 }
-                projectsData[k] = parsed[k];
+                projectsData[k] = normalizeProjectDefaults(parsed[k]);
             }
         });
         if (Object.keys(projectsData).length === 0) {
             projectsData = JSON.parse(JSON.stringify(defaultProjectsData));
+            Object.values(projectsData).forEach(normalizeProjectDefaults);
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(projectsData));
         }
     } else {
         projectsData = JSON.parse(JSON.stringify(defaultProjectsData));
+        Object.values(projectsData).forEach(normalizeProjectDefaults);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(projectsData));
     }
 } catch (e) {
     console.error("Failed to load projectsData:", e);
     projectsData = JSON.parse(JSON.stringify(defaultProjectsData));
+    Object.values(projectsData).forEach(normalizeProjectDefaults);
 }
 
 // Background sync from Supabase (Authoritative Single Source of Truth)
@@ -6638,6 +6663,7 @@ async function syncWithRailwayBackend() {
             const json = await res.json();
             if (json && json.status === "success" && json.data && Object.keys(json.data).length > 0) {
                 projectsData = json.data;
+                Object.values(projectsData).forEach(normalizeProjectDefaults);
                 try {
                     localStorage.setItem("permpoon_projects_data_v3", JSON.stringify(projectsData));
                 } catch(e) {}
@@ -13085,6 +13111,8 @@ function renderCostManagement() {
         return;
     }
 
+    normalizeProjectDefaults(project);
+
     if (costSelector && costSelector.value !== activeCode) {
         costSelector.value = activeCode;
     }
@@ -13108,10 +13136,11 @@ function renderCostManagement() {
     const tbody = document.getElementById("transaction-table-body");
     tbody.innerHTML = "";
     
-    if (project.expenses.length === 0) {
+    const expensesList = Array.isArray(project.expenses) ? project.expenses : [];
+    if (expensesList.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">ไม่มีรายการบันทึกค่าใช้จ่าย</td></tr>`;
     } else {
-        project.expenses.forEach((exp, idx) => {
+        expensesList.forEach((exp, idx) => {
             const tr = document.createElement("tr");
             
             let expClass = "other";
@@ -13173,6 +13202,9 @@ function renderCostManagement() {
 }
 
 function renderCostStructureDonutChart(structure) {
+    if (!structure || typeof structure !== "object") {
+        structure = { labor: 0, material: 0, other: 0 };
+    }
     if (typeof Chart === "undefined") {
         console.warn("Chart.js is not loaded.");
         return;
