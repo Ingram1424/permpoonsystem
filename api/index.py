@@ -313,6 +313,15 @@ async def get_logo():
         return FileResponse(logo_path, media_type="image/png")
     return HTMLResponse(status_code=404)
 
+@app.get("/logo_icon.png")
+async def get_logo_icon():
+    icon_path = os.path.join(parent_dir, "logo_icon.png")
+    if not os.path.exists(icon_path):
+        icon_path = os.path.join(static_dir, "logo_icon.png")
+    if os.path.exists(icon_path):
+        return FileResponse(icon_path, media_type="image/png")
+    return HTMLResponse(status_code=404)
+
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return render_template(request, "index.html")

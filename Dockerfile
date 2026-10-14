@@ -11,6 +11,7 @@ COPY api/ ./api/
 COPY static/ ./static/
 COPY templates/ ./templates/
 COPY logo.png ./logo.png
+COPY logo_icon.png ./logo_icon.png
 
 # Expose port (default 8000, Railway will override via $PORT)
 EXPOSE 8000
