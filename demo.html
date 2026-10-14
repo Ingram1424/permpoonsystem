@@ -3359,7 +3359,12 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <option value="2026">ปี 2026</option>
                         </select>
 
-                        <label for="subnav-hospital-selector" class="selector-label">เลือกลูกค้า / ผู้ว่าจ้าง :</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                            <label for="subnav-hospital-selector" class="selector-label" style="margin: 0;">เลือกโรงพยาบาล :</label>
+                            <button type="button" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="background: none; border: none; color: var(--primary-blue); cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; padding: 0;">
+                                <i class="fa-solid fa-plus"></i> เพิ่มโรงพยาบาล
+                            </button>
+                        </div>
                         <select id="subnav-hospital-selector" class="form-control" style="margin-bottom: 12px; font-size: 12px; padding: 6px; height: auto;">
                             <!-- Populated dynamically with hospitals -->
                         </select>
@@ -4387,7 +4392,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                 <i class="fa-solid fa-layer-group" style="color: var(--primary-blue);"></i>
                                 <span>ระบบเลือกและบริหารโครงการ</span>
                             </h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0 0;">กรุณาเลือกปีโครงการ ลูกค้า/หมวดหมู่งาน หรือพิมพ์ค้นหาโครงการด้านล่าง เพื่อเข้าหน้าทำงานและระบายสีแผนงาน</p>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 4px 0 0 0;">กรุณาเลือกปีโครงการ โรงพยาบาล หรือพิมพ์ค้นหาโครงการด้านล่าง เพื่อเข้าหน้าทำงานและระบายสีแผนงาน</p>
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <button class="btn btn-sm btn-outline hide-customer" id="btn-portal-share-projects" style="font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border-color); color: #1e3a8a;">
@@ -4401,10 +4406,10 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                         </div>
                     </div>
                     
-                    <!-- Grid filters & Search panel -->
+                    <!-- Grid filters & Search panel (TW 4-Column Layout with Add Year & Add Hospital) -->
                     <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px; background: #ffffff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); width: 100%;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
-                            <!-- Year Selector with Add Button -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; width: 100%;">
+                            <!-- 1. Year Selector with Add Button -->
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                     <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); margin: 0;">ปีโครงการ :</label>
@@ -4419,28 +4424,21 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <option value="2026">ปี 2026 (พ.ศ. 2569)</option>
                                 </select>
                             </div>
-
-                            <!-- Work Category Selector -->
-                            <div>
-                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">หมวดหมู่งาน :</label>
-                                <select id="portal-category-filter" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
-                                    <option value="all" selected>ทั้งหมดทุกหมวดงาน</option>
-                                    <option value="renovation">🔨 งานปรับปรุง / รีโนเวท</option>
-                                    <option value="building">🏢 งานซ่อมแซมอาคาร / สถาปัตย์</option>
-                                    <option value="plumbing">🚰 งานระบบประปาและสุขาภิบาล</option>
-                                    <option value="general">🏗️ งานรับเหมาทั่วไป</option>
-                                </select>
-                            </div>
                             
-                            <!-- Customer Selector -->
+                            <!-- 2. Hospital Selector with Add Hospital Button -->
                             <div>
-                                <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">เลือกลูกค้า / ผู้ว่าจ้าง :</label>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); margin: 0;">เลือกโรงพยาบาล :</label>
+                                    <button type="button" class="btn btn-outline" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-color: var(--primary-blue); color: var(--primary-blue); background: #eff6ff; height: 22px; border-radius: 4px; cursor: pointer;">
+                                        <i class="fa-solid fa-plus"></i> เพิ่มโรงพยาบาล
+                                    </button>
+                                </div>
                                 <select id="portal-hospital-selector" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
-                                    <option value="all" selected>ทั้งหมดทุกลูกค้า</option>
+                                    <option value="all" selected>ทั้งหมดทุกโรงพยาบาล</option>
                                 </select>
                             </div>
                             
-                            <!-- Project Select Dropdown -->
+                            <!-- 3. Project Select Dropdown -->
                             <div>
                                 <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">เลือกงาน/โครงการ :</label>
                                 <select id="portal-project-dropdown" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
@@ -4448,7 +4446,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                 </select>
                             </div>
 
-                            <!-- Status Selector -->
+                            <!-- 4. Status Selector -->
                             <div>
                                 <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">สถานะโครงการ :</label>
                                 <select id="portal-status-filter" class="form-control" style="font-size: 13px; padding: 10px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;">
@@ -4465,7 +4463,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                         <div style="position: relative; width: 100%; border-top: 1px dashed var(--border-color); padding-top: 16px;">
                             <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); display: block; margin-bottom: 8px;">พิมพ์ค้นหาโครงการ :</label>
                             <div style="position: relative; width: 100%;">
-                                <input type="text" id="portal-project-search" class="form-control" placeholder="ค้นหาด้วยรหัสโครงการ, ชื่องาน, ลูกค้า/สถานที่ หรือหมวดหมู่งาน..." style="font-size: 13.5px; padding: 10px 42px 10px 14px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;" autocomplete="off">
+                                <input type="text" id="portal-project-search" class="form-control" placeholder="ค้นหาด้วยรหัสโครงการ, ชื่องาน, ชื่อโรงพยาบาล หรือปีโครงการ..." style="font-size: 13.5px; padding: 10px 42px 10px 14px; height: 42px; border-radius: var(--radius-md); border: 1px solid var(--border-color); width: 100%;" autocomplete="off">
                                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px;"></i>
                             </div>
                         </div>
@@ -5815,20 +5813,20 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
         </div>
     </div>
 
-    <!-- Quick Add Client Modal -->
+    <!-- Quick Add Hospital Modal -->
     <div class="modal-overlay" id="quick-add-hospital-modal" style="z-index: 1400; display: none;">
         <div class="modal-card" style="max-width: 420px;">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fa-solid fa-user-plus text-blue"></i> เพิ่มลูกค้า / ผู้ว่าจ้างใหม่</h3>
+                <h3 class="modal-title"><i class="fa-solid fa-hospital text-blue"></i> เพิ่มโรงพยาบาลใหม่</h3>
                 <button class="modal-close-btn" onclick="window.closeQuickAddHospitalModal()">&times;</button>
             </div>
             <div style="padding: 20px;">
-                <label class="form-label">ชื่อลูกค้า / ผู้ว่าจ้าง <span class="required">*</span></label>
-                <input type="text" id="quick-add-hospital-input" class="form-control" placeholder="เช่น บริษัท เอบีซี จำกัด / คุณวิชัย / คอนโด นิวทาวน์" style="font-family: 'Prompt'; font-size: 13px;" autocomplete="off">
+                <label class="form-label">ชื่อโรงพยาบาล <span class="required">*</span></label>
+                <input type="text" id="quick-add-hospital-input" class="form-control" placeholder="เช่น โรงพยาบาลพญาไท 3 / โรงพยาบาลเปาโล / โรงพยาบาลเพชรเวช" style="font-family: 'Prompt'; font-size: 13px;" autocomplete="off">
                 <div style="display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end;">
                     <button type="button" class="btn btn-outline" onclick="window.closeQuickAddHospitalModal()" style="font-family: 'Prompt'; font-size: 12.5px;">ยกเลิก</button>
                     <button type="button" class="btn btn-primary" onclick="window.submitQuickAddHospital()" style="font-family: 'Prompt'; font-size: 12.5px; background: linear-gradient(135deg, #10b981, #059669); border: none;">
-                        <i class="fa-solid fa-plus"></i> เพิ่มลูกค้า
+                        <i class="fa-solid fa-plus"></i> เพิ่มโรงพยาบาล
                     </button>
                 </div>
             </div>
@@ -6814,13 +6812,13 @@ function populateSubnavHospitals() {
         hospitals = allHospitals.filter(h => effectiveH.includes(h));
         const allOpt = document.createElement("option");
         allOpt.value = "all";
-        allOpt.textContent = "ทั้งหมดทุกลูกค้าที่ได้รับสิทธิ์";
+        allOpt.textContent = "ทั้งหมดทุกโรงพยาบาลที่ได้รับสิทธิ์";
         selector.appendChild(allOpt);
     } else {
-        // Add "All Customers" option for non-customer roles
+        // Add "All Hospitals" option for non-customer roles
         const allOpt = document.createElement("option");
         allOpt.value = "all";
-        allOpt.textContent = "ทั้งหมดทุกลูกค้า / ผู้ว่าจ้าง";
+        allOpt.textContent = "ทั้งหมดทุกโรงพยาบาล";
         selector.appendChild(allOpt);
     }
     
@@ -7643,6 +7641,7 @@ window.refreshHospitalsDependencies = function() {
     if (typeof populateSubnavHospitals === "function") populateSubnavHospitals();
     if (typeof renderPermissionsManagement === "function") renderPermissionsManagement();
     if (typeof window.renderHospitalsManagementTable === "function") window.renderHospitalsManagementTable();
+    if (typeof window.renderProjectSelectionPortal === "function") window.renderProjectSelectionPortal();
 };
 
 window.updateSignerNamesDatalist = function() {
@@ -14101,11 +14100,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.style.borderColor = "var(--border-color)";
             };
 
-            // Badge styling based on status
+            // Badge styling based on status (TW style)
             let badgeBg = "#dcfce7";
             let badgeColor = "#15803d";
-            let displayStatus = p.status || "งานที่กำลังดำเนินการ";
-            if (displayStatus === "งานเสร็จแล้วรอส่งงาน" || displayStatus === "เสร็จสิ้น" || displayStatus === "งานเสร็จแล้วรอส่งงาน/อนุมัติ") {
+            let displayStatus = p.status || "กำลังดำเนินการ";
+            if (displayStatus === "งานที่ดำเนินการเสร็จแล้ว" || displayStatus === "เสร็จสิ้น") {
+                badgeBg = "#dcfce7";
+                badgeColor = "#15803d";
+                displayStatus = "งานที่ดำเนินการเสร็จแล้ว";
+            } else if (displayStatus === "งานเสร็จแล้วรอส่งงาน" || displayStatus === "งานเสร็จแล้วรอส่งงาน/อนุมัติ" || displayStatus === "เสร็จแล้ว") {
                 badgeBg = "#e0f2fe";
                 badgeColor = "#0369a1";
                 displayStatus = "งานเสร็จแล้วรอส่งงาน/อนุมัติ";
@@ -14113,65 +14116,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 badgeBg = "#fef3c7";
                 badgeColor = "#b45309";
                 displayStatus = "งานที่รอเสนอราคา";
+            } else {
+                badgeBg = "#dcfce7";
+                badgeColor = "#15803d";
+                displayStatus = "กำลังดำเนินการ";
             }
 
-            // Category detection & visual badge
-            let catName = "งานรับเหมาทั่วไป";
-            let catColor = "#059669";
-            let catBg = "#d1fae5";
-            let catIcon = "fa-helmet-safety";
-
-            const pCat = (p.category || "").toLowerCase();
-            const pNameStr = (p.name || "").toLowerCase();
-
-            if (pCat === "renovation" || pNameStr.includes("รีโนเวท") || pNameStr.includes("ปรับปรุง") || pNameStr.includes("ตกแต่ง") || pNameStr.includes("กั้นห้อง")) {
-                catName = "ปรับปรุง / รีโนเวท";
-                catColor = "#c2410c";
-                catBg = "#ffedd5";
-                catIcon = "fa-hammer";
-            } else if (pCat === "building" || pNameStr.includes("ซ่อมแซม") || pNameStr.includes("อาคาร") || pNameStr.includes("โครงสร้าง") || pNameStr.includes("รอยร้าว") || pNameStr.includes("ดาดฟ้า") || pNameStr.includes("ทาสี")) {
-                catName = "ซ่อมแซมอาคาร";
-                catColor = "#4338ca";
-                catBg = "#e0e7ff";
-                catIcon = "fa-building";
-            } else if (pCat === "plumbing" || pNameStr.includes("ประปา") || pNameStr.includes("สุขาภิบาล") || pNameStr.includes("ท่อ") || pNameStr.includes("ปั๊ม") || pNameStr.includes("บำบัด")) {
-                catName = "ประปา & สุขาภิบาล";
-                catColor = "#0284c7";
-                catBg = "#e0f2fe";
-                catIcon = "fa-faucet-drip";
-            } else if (p.categoryLabel) {
-                catName = p.categoryLabel;
-            }
-
-            const isPM = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe");
             const valFormatted = (Number(p.value) || 0).toLocaleString();
-            const infoText = isPM ? `มูลค่าโครงการ: <strong style="color: var(--navy-dark);">${valFormatted} บาท</strong>` : `รหัส PO: <strong>${p.code || '-'}</strong>`;
+            const actualProgress = p.progress || 0;
+            const plannedProgress = (p.plannedProgress !== undefined && p.plannedProgress !== null) ? p.plannedProgress : actualProgress;
 
-            const siteLocationHTML = (p.site || p.siteLocation || p.location) ? `
-                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 3px;">
-                    <i class="fa-solid fa-location-dot" style="color: #ef4444; width: 14px;"></i>
-                    <span>${p.site || p.siteLocation || p.location}</span>
-                </div>
-            ` : '';
+            // Display code with PO prefix if numeric-like, or as-is (e.g., PO 2421126002247 or PP-2601)
+            let codeDisplay = p.code || '';
+            if (/^\d{8,}/.test(codeDisplay) && !codeDisplay.startsWith("PO")) {
+                codeDisplay = "PO " + codeDisplay;
+            }
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                        <span style="font-size: 11px; font-weight: 700; background: var(--primary-light); color: var(--navy-dark); padding: 3px 8px; border-radius: 4px; font-family: monospace;">${p.code || ''}</span>
-                        <span style="font-size: 10px; font-weight: 700; background: ${catBg}; color: ${catColor}; padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
-                            <i class="fa-solid ${catIcon}"></i> ${catName}
-                        </span>
-                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: #1e293b; font-family: monospace;">${codeDisplay}</span>
                     <span style="font-size: 10px; font-weight: 700; background: ${badgeBg}; color: ${badgeColor}; padding: 3px 8px; border-radius: 4px; white-space: nowrap;">${displayStatus}</span>
                 </div>
                 
                 <div style="flex-grow: 1;">
                     <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--navy-dark); line-height: 1.4; min-height: 40px;">${(p.name || '').replace(/ \(\d{4}\)$/, '')}</h4>
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">
-                        <i class="fa-solid fa-user-tie" style="color: var(--navy-medium); width: 14px;"></i>
-                        <span>ลูกค้า: <strong style="color: #1e293b;">${p.customer || '-'}</strong></span>
+                        <i class="fa-solid fa-hospital" style="color: var(--navy-medium); width: 14px;"></i>
+                        <span>${p.customer || '-'}</span>
                     </div>
-                    ${siteLocationHTML}
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 3px;">
                         <i class="fa-solid fa-calendar-days" style="color: var(--navy-medium); width: 14px;"></i>
                         <span>ปีโครงการ: ${p.year ? (p.year + 543) + ' (ค.ศ. ' + p.year + ')' : '-'}</span>
@@ -14180,17 +14152,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 <div style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px;">
                     <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between;">
-                        <span>${infoText}</span>
-                        <span style="font-weight: 700; color: var(--primary-blue);">${p.progress || 0}%</span>
+                        <span>มูลค่าโครงการ: <strong style="color: var(--navy-dark);">${valFormatted} บาท</strong></span>
+                        <span style="font-weight: 700; color: #0284c7;">${actualProgress}%</span>
                     </div>
                     
                     <div style="width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; display: flex; gap: 1px;">
-                        <div style="width: ${p.progress || 0}%; height: 100%; background: #10b981; border-radius: 3px;" title="ผลงานจริง: ${p.progress || 0}%"></div>
-                        <div style="width: ${Math.max(0, (p.plannedProgress || 0) - (p.progress || 0))}%; height: 100%; background: #3b82f6; border-radius: 3px;" title="แผนงานสะสม: ${p.plannedProgress || 0}%"></div>
+                        <div style="width: ${actualProgress}%; height: 100%; background: #10b981; border-radius: 3px;" title="ผลงานจริง: ${actualProgress}%"></div>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-top: 4px;">
-                        <span>แผนงานสะสม: ${p.plannedProgress || 0}%</span>
-                        <span>งานจริง: ${p.progress || 0}%</span>
+                        <span>แผนงานสะสม: ${plannedProgress}%</span>
+                        <span>งานจริง: ${actualProgress}%</span>
                     </div>
                 </div>
             `;
@@ -20950,7 +20921,7 @@ window.addNewHospital = function(nameOverride) {
         return input ? input.value.trim() : "";
     })();
     if (!name) {
-        showToast("⚠️ กรุณาพิมพ์ชื่อลูกค้า / ผู้ว่าจ้างก่อน", "warning");
+        showToast("⚠️ กรุณาพิมพ์ชื่อโรงพยาบาลก่อน", "warning");
         return false;
     }
     if ((appState.hospitalsList || []).includes(name)) {
@@ -20964,7 +20935,7 @@ window.addNewHospital = function(nameOverride) {
     localStorage.setItem("permpoon_clients_list", JSON.stringify(appState.hospitalsList));
     window.saveHospitalsListToSupabase();
     window.refreshHospitalsDependencies();
-    showToast(`✅ เพิ่มลูกค้า "${name}" เรียบร้อยแล้ว`, "success");
+    showToast(`✅ เพิ่มโรงพยาบาล "${name}" เรียบร้อยแล้ว`, "success");
     return true;
 };
 
@@ -20995,13 +20966,19 @@ window.submitQuickAddHospital = function() {
     if (window.addNewHospital(name)) {
         window.closeQuickAddHospitalModal();
         // Auto-select newly added hospital in open dropdowns
-        ["new-project-hospital", "edit-project-customer"].forEach(id => {
+        ["portal-hospital-selector", "subnav-hospital-selector", "new-project-hospital", "edit-project-customer"].forEach(id => {
             const sel = document.getElementById(id);
             if (sel) {
                 const opt = [...sel.options].find(o => o.value === name);
-                if (opt) sel.value = name;
+                if (opt) {
+                    sel.value = name;
+                    sel.dispatchEvent(new Event("change"));
+                }
             }
         });
+        if (typeof window.renderProjectSelectionPortal === "function") {
+            window.renderProjectSelectionPortal();
+        }
     }
 };
 
