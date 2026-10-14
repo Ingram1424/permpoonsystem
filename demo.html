@@ -3270,12 +3270,6 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                 </div>
                 <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2); transition: transform 0.1s, opacity 0.2s;" onmousedown="this.style.transform='scale(0.98)'" onmouseup="this.style.transform='scale(1)'" onmouseover="this.style.opacity='0.95'" onmouseout="this.style.opacity='1'">เข้าสู่ระบบ</button>
             </form>
-            <div style="margin-top: 18px; padding: 10px 14px; background: rgba(238, 242, 255, 0.9); border: 1px dashed #6366f1; border-radius: 8px; width: 100%; font-size: 11px; color: #3730a3; text-align: left; line-height: 1.6;">
-                <div style="font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-key text-blue"></i> บัญชีสำหรับทดสอบระบบ (Demo Accounts):</div>
-                <div>• <strong>Admin (ผู้ดูแลระบบ):</strong> <code>admin</code> / รหัสผ่าน <code>1234</code></div>
-                <div>• <strong>PM (ผู้จัดการโครงการ):</strong> <code>pm</code> / รหัสผ่าน <code>1234</code></div>
-                <div>• <strong>บัญชี (Accountant):</strong> <code>accounting</code> / รหัสผ่าน <code>1234</code></div>
-            </div>
         </div>
     </div>
     <script>
@@ -19908,10 +19902,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ============================================================
 
 const USERS = {
-    "admin":      { password: "1234", role: "admin",      displayName: "Super Admin",      roleLabel: "Admin Manager" },
-    "pm":         { password: "1234", role: "pm",         displayName: "Project Manager",    roleLabel: "Project Manager" },
-    "pm2":        { password: "1234", role: "pm",         displayName: "Project Manager 2", roleLabel: "Project Manager" },
-    "accounting": { password: "1234", role: "accounting", displayName: "Account System",   roleLabel: "Accountant" }
+    "admin": { password: "Admin@PP2026", role: "admin", displayName: "ผู้ดูแลระบบ (Admin)", roleLabel: "Admin Manager" },
+    "pm":    { password: "Pm@PP2026",    role: "pm",    displayName: "ผู้จัดการโครงการ (PM)", roleLabel: "Project Manager" }
 };
 
 const SESSION_KEY = "permpoon_session";
@@ -19934,8 +19926,12 @@ window.getUserDetails = function(username) {
     
     // Check static USERS
     if (USERS[lowerUser]) {
-        const overridePass = (appState.staticUserOverrides && appState.staticUserOverrides[lowerUser]) 
+        let overridePass = (appState.staticUserOverrides && appState.staticUserOverrides[lowerUser]) 
             || localStorage.getItem("permpoon_pass_override_" + lowerUser);
+        if (overridePass === "1234") {
+            overridePass = null;
+            try { localStorage.removeItem("permpoon_pass_override_" + lowerUser); } catch(e) {}
+        }
         return {
             username: lowerUser,
             password: overridePass || USERS[lowerUser].password,
