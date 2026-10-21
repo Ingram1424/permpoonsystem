@@ -6631,13 +6631,16 @@ function queueSyncActiveProject(code) {
     processSyncQueue();
 }
 
-function syncActiveProject() {
+function syncActiveProject(targetCode) {
+    if (targetCode && targetCode !== "all") {
+        queueSyncActiveProject(targetCode);
+    }
     const activeCode = appState.selectedDetailProject;
-    if (activeCode && activeCode !== "all") {
+    if (activeCode && activeCode !== "all" && activeCode !== targetCode) {
         queueSyncActiveProject(activeCode);
     }
     const costCode = appState.selectedCostProject;
-    if (costCode && costCode !== "all" && costCode !== activeCode) {
+    if (costCode && costCode !== "all" && costCode !== activeCode && costCode !== targetCode) {
         queueSyncActiveProject(costCode);
     }
 }
@@ -6661,9 +6664,16 @@ async function syncWithRailwayBackend() {
                 try {
                     localStorage.setItem("permpoon_projects_data_v3", JSON.stringify(projectsData));
                 } catch(e) {}
-                if (typeof populateSubnavProjects === "function") populateSubnavProjects();
+                if (typeof refreshYearDropdowns === "function") refreshYearDropdowns();
+                if (typeof populateSubnavHospitals === "function") populateSubnavHospitals();
+                const yearFilterEl = document.getElementById("subnav-year-filter");
+                if (typeof populateSubnavProjects === "function") populateSubnavProjects(yearFilterEl ? yearFilterEl.value : "all");
+                if (typeof populateCostHospitals === "function") populateCostHospitals();
+                if (typeof populateCostProjects === "function") populateCostProjects();
                 if (typeof renderOverallDashboard === "function") renderOverallDashboard();
                 if (typeof renderProjectSelectionPortal === "function") renderProjectSelectionPortal();
+                if (typeof renderSubnavProjectWorkspace === "function") renderSubnavProjectWorkspace();
+                if (typeof renderCostManagement === "function" && appState.currentView === "cost") renderCostManagement();
                 updateCloudSyncStatus("synced");
                 console.log("✅ Synced with Railway Database successfully!");
                 return true;
@@ -6695,7 +6705,7 @@ function deleteProjectFromRailway(code) {
     } catch(e) {}
 }
 
-function saveToLocalStorage() {
+function saveToLocalStorage(targetCode) {
     // Recalculate jobs and progress from tasks for all projects before saving
     Object.values(projectsData).forEach(p => recalculateJobsFromTasks(p));
     
@@ -6717,9 +6727,6 @@ function saveToLocalStorage() {
                 }
             });
         }
-    }
-    // Set updatedAt timestamp locally to help resolve startup sync conflicts
-    if (activeProj) {
         activeProj.updatedAt = new Date().toISOString();
         activeProj.isSynced = false;
     }
@@ -6728,6 +6735,10 @@ function saveToLocalStorage() {
         costProj.updatedAt = new Date().toISOString();
         costProj.isSynced = false;
     }
+    if (targetCode && projectsData[targetCode]) {
+        projectsData[targetCode].updatedAt = new Date().toISOString();
+        projectsData[targetCode].isSynced = false;
+    }
     try {
         localStorage.setItem("permpoon_projects_data_v3", JSON.stringify(projectsData));
     } catch (e) {
@@ -6735,9 +6746,12 @@ function saveToLocalStorage() {
     }
     if (activeProj) syncProjectToRailway(activeProj.code, activeProj);
     if (costProj) syncProjectToRailway(costProj.code, costProj);
+    if (targetCode && projectsData[targetCode] && targetCode !== activeProj?.code && targetCode !== costProj?.code) {
+        syncProjectToRailway(targetCode, projectsData[targetCode]);
+    }
 
     // Always sync to Supabase even if localStorage quota is exceeded!
-    syncActiveProject();
+    syncActiveProject(targetCode);
 }
 
 // Load from Railway Database first, fallback to Supabase on startup
@@ -6746,11 +6760,14 @@ syncWithRailwayBackend().then(synced => {
 });
 
 // Auto-Sync in background every 30 seconds to keep all devices in sync (only when idle)
-setInterval(() => {
+setInterval(async () => {
     const isModalOpen = document.querySelector(".modal-overlay.active");
     const isUserTyping = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
     if (!isSyncing && syncQueue.length === 0 && !window.ganttIsDirty && !isModalOpen && !isUserTyping && !document.hidden) {
-        loadFromSupabase(false);
+        const railwaySynced = await syncWithRailwayBackend();
+        if (!railwaySynced) {
+            loadFromSupabase(false);
+        }
     }
 }, 30000);
 
@@ -13844,7 +13861,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!activeCode || activeCode === "all" || !projectsData[activeCode]) return;
             const newStatus = this.value;
             projectsData[activeCode].status = newStatus;
-            saveToLocalStorage(); // Use the standard function that syncs with Supabase!
+            saveToLocalStorage(activeCode); // Use the standard function that syncs with Supabase!
             
             showToast(`ปรับสถานะโครงการ ${activeCode} เป็น "${newStatus}" เรียบร้อยแล้ว!`, "success");
             
@@ -14602,7 +14619,7 @@ document.addEventListener("DOMContentLoaded", () => {
             project.documents.unshift({ name, type, uploadedAt: date, fileUrl });
             
             // Save and sync immediately
-            saveToLocalStorage();
+            saveToLocalStorage(projectCode);
             
             showToast(`อัปโหลดเอกสาร ${name} เข้าสู่โครงการเรียบร้อย!`, "success");
             closeUploadModal();
@@ -17928,7 +17945,7 @@ document.addEventListener("DOMContentLoaded", () => {
             appState.selectedDetailProject = code;
 
             // Save and sync immediately
-            saveToLocalStorage();
+            saveToLocalStorage(code);
             
             showToast(`สร้างโครงการใหม่ ${code} เรียบร้อยแล้ว!`, "success");
             closeCreateProjectModal();
@@ -19803,7 +19820,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Save and sync immediately
-            saveToLocalStorage();
+            saveToLocalStorage(code);
 
             showToast(`แก้ไขข้อมูล ${code} เรียบร้อยแล้ว!`, "success");
             closeEditProjectModal();
