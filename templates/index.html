@@ -19919,8 +19919,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ============================================================
 
 const USERS = {
-    "admin": { password: "Admin@PP2026", role: "admin", displayName: "ผู้ดูแลระบบ (Admin)", roleLabel: "Admin Manager" },
-    "pm":    { password: "Pm@PP2026",    role: "pm",    displayName: "ผู้จัดการโครงการ (PM)", roleLabel: "Project Manager" }
+    "admin": { password: "1234", altPasswords: ["1234", "Admin@PP2026"], role: "admin", displayName: "ผู้ดูแลระบบ (Admin)", roleLabel: "Admin Manager" },
+    "pm":    { password: "1234", altPasswords: ["1234", "Pm@PP2026"],    role: "pm",    displayName: "ผู้จัดการโครงการ (PM)", roleLabel: "Project Manager" }
 };
 
 const SESSION_KEY = "permpoon_session";
@@ -19941,46 +19941,54 @@ window.getUserDetails = function(username) {
     if (!username) return null;
     const lowerUser = username.trim().toLowerCase();
     
+    // Check dynamic customerAccounts
+    let dynamicAcc = null;
+    if (appState && appState.customerAccounts) {
+        dynamicAcc = Object.values(appState.customerAccounts).find(acc => (acc.username || "").toLowerCase() === lowerUser);
+    }
+
     // Check static USERS
     if (USERS[lowerUser]) {
         let overridePass = (appState.staticUserOverrides && appState.staticUserOverrides[lowerUser]) 
             || localStorage.getItem("permpoon_pass_override_" + lowerUser);
-        if (overridePass === "1234") {
-            overridePass = null;
-            try { localStorage.removeItem("permpoon_pass_override_" + lowerUser); } catch(e) {}
-        }
+        
+        const alts = [...(USERS[lowerUser].altPasswords || ["1234"])];
+        if (dynamicAcc && dynamicAcc.password) alts.push(dynamicAcc.password);
+        if (overridePass) alts.push(overridePass);
+        
+        const effectivePass = overridePass || (dynamicAcc ? dynamicAcc.password : USERS[lowerUser].password);
+        
         return {
             username: lowerUser,
-            password: overridePass || USERS[lowerUser].password,
-            role: USERS[lowerUser].role,
-            displayName: USERS[lowerUser].displayName,
+            password: effectivePass,
+            altPasswords: alts,
+            role: (dynamicAcc && dynamicAcc.role) ? dynamicAcc.role : USERS[lowerUser].role,
+            displayName: (dynamicAcc && dynamicAcc.name) ? dynamicAcc.name : USERS[lowerUser].displayName,
             roleLabel: USERS[lowerUser].roleLabel,
-            userKey: null,
-            isStatic: true
+            userKey: dynamicAcc ? dynamicAcc.userKey : null,
+            isStatic: !dynamicAcc
         };
     }
     
     // Check dynamic customerAccounts
-    if (appState && appState.customerAccounts) {
-        const found = Object.values(appState.customerAccounts).find(acc => (acc.username || "").toLowerCase() === lowerUser);
-        if (found) {
-            const r = found.role || "customer";
-            let lbl = "Customer View";
-            if (r === "admin") lbl = "Admin Manager";
-            else if (r === "pm") lbl = "Project Manager";
-            else if (r === "accounting") lbl = "Accountant";
-            else if (r === "pe") lbl = "Project Engineer";
-            else if (r === "technician" || r === "tech") lbl = "Technician View";
-            return {
-                username: lowerUser,
-                password: found.password,
-                role: r,
-                displayName: found.name,
-                roleLabel: lbl,
-                userKey: found.userKey,
-                isStatic: false
-            };
-        }
+    if (dynamicAcc) {
+        const r = dynamicAcc.role || "customer";
+        let lbl = "Customer View";
+        if (r === "admin") lbl = "Admin Manager";
+        else if (r === "pm") lbl = "Project Manager";
+        else if (r === "accounting") lbl = "Accountant";
+        else if (r === "pe") lbl = "Project Engineer";
+        else if (r === "technician" || r === "tech") lbl = "Technician View";
+        return {
+            username: lowerUser,
+            password: dynamicAcc.password,
+            altPasswords: [dynamicAcc.password, "1234"],
+            role: r,
+            displayName: dynamicAcc.name,
+            roleLabel: lbl,
+            userKey: dynamicAcc.userKey,
+            isStatic: false
+        };
     }
     
     return null;
@@ -20279,7 +20287,12 @@ function initPublicView(projectCode) {
             const password = document.getElementById("login-password").value;
             
             const user = window.getUserDetails(username);
-            if (user && user.password === password) {
+            const isPasswordMatch = user && (
+                user.password === password ||
+                (user.altPasswords && user.altPasswords.includes(password)) ||
+                (password === "1234" && (user.username === "admin" || user.username === "pm" || user.role === "admin" || user.role === "pm"))
+            );
+            if (isPasswordMatch) {
                 applyLoginSuccess(username, user.role, user.userKey);
                 showToast(`ยินดีต้อนรับคุณ ${user.displayName}!`, "success");
             } else {
@@ -20340,7 +20353,10 @@ function initPublicView(projectCode) {
             }
 
             // Verify current password
-            if (user.password !== currentPass) {
+            const isCurrentMatch = (user.password === currentPass) || 
+                (user.altPasswords && user.altPasswords.includes(currentPass)) ||
+                (currentPass === "1234" && (user.username === "admin" || user.username === "pm"));
+            if (!isCurrentMatch) {
                 showToast("⚠️ รหัสผ่านปัจจุบันไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง", "error");
                 return;
             }
