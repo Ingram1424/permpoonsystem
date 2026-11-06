@@ -19739,7 +19739,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const delBtn = document.getElementById("btn-delete-project");
         if (delBtn) {
-            delBtn.style.display = (appState.currentRole === "admin") ? "" : "none";
+            delBtn.style.display = (appState.currentRole === "admin" || appState.currentRole === "pm") ? "" : "none";
         }
         if (editProjectModal) editProjectModal.classList.add("active");
     };
@@ -19878,8 +19878,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (deleteProjectBtn) {
         deleteProjectBtn.addEventListener("click", function() {
-            if (appState.currentRole !== "admin") {
-                showToast("คุณไม่มีสิทธิ์ลบโครงการ (จำกัดเฉพาะ Admin เท่านั้น)", "error");
+            if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+                showToast("คุณไม่มีสิทธิ์ลบโครงการ (จำกัดเฉพาะ Admin และ PM)", "error");
                 return;
             }
             const code = document.getElementById("edit-project-code").value;
