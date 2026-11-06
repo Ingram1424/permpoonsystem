@@ -4742,7 +4742,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <th style="padding: 10px 12px; width: 95px; text-align: center;">คู่เทียบ 1</th>
                                                     <th style="padding: 10px 12px; width: 95px; text-align: center;">คู่เทียบ 2</th>
                                                     <th style="padding: 10px 12px; width: 180px;">หมายเหตุ</th>
-                                                    <th style="padding: 10px 12px; width: 90px; text-align: center;">จัดการ</th>
+                                                    <th style="padding: 10px 12px; width: 130px; text-align: center;">จัดการ</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="quoting-storage-table-body">
@@ -9160,9 +9160,16 @@ function renderQuotingStorageView(project) {
             <td style="padding: 10px 12px; text-align: center;">${comp2Html}</td>
             <td style="padding: 10px 12px; font-size: 11.5px; line-height: 1.4; max-width: 200px; word-wrap: break-word; white-space: normal;">${remarksHtml}</td>
             <td style="padding: 10px 12px; text-align: center;" onclick="event.stopPropagation();">
-                <button class="btn btn-sm btn-outline" style="font-size: 10.5px; padding: 2px 8px;" onclick="appState.selectedDetailProject='${p.code}'; document.getElementById('open-edit-project-btn').click();">
-                    <i class="fa-solid fa-pen-to-square"></i> แก้ไข
-                </button>
+                <div style="display: inline-flex; gap: 4px; align-items: center; justify-content: center;">
+                    <button class="btn btn-sm btn-outline" style="font-size: 10.5px; padding: 2px 8px;" onclick="appState.selectedDetailProject='${p.code}'; document.getElementById('open-edit-project-btn').click();">
+                        <i class="fa-solid fa-pen-to-square"></i> แก้ไข
+                    </button>
+                    ${(appState.currentRole === "admin" || appState.currentRole === "pm") ? `
+                    <button class="btn btn-sm btn-outline-red" style="font-size: 10.5px; padding: 2px 8px; color: #ef4444; border: 1px solid #fca5a5; background: #fef2f2; cursor: pointer;" onclick="window.deleteProjectOrQuoting('${p.code}');">
+                        <i class="fa-solid fa-trash-can"></i> ลบ
+                    </button>
+                    ` : ''}
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -14190,6 +14197,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const valFormatted = (Number(p.value) || 0).toLocaleString();
             const actualProgress = p.progress || 0;
             const plannedProgress = (p.plannedProgress !== undefined && p.plannedProgress !== null) ? p.plannedProgress : actualProgress;
+            const canManage = (appState.currentRole === "admin" || appState.currentRole === "pm");
 
             // Display code with PO prefix if numeric-like, or as-is (e.g., PO 2421126002247 or PP-2601)
             let codeDisplay = p.code || '';
@@ -14229,6 +14237,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         <span>งานจริง: ${actualProgress}%</span>
                     </div>
                 </div>
+                ${canManage ? `
+                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px;" onclick="event.stopPropagation();">
+                    <button class="btn btn-xs btn-outline" style="font-size: 11px; padding: 3px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" onclick="appState.selectedDetailProject='${p.code}'; document.getElementById('open-edit-project-btn').click();">
+                        <i class="fa-solid fa-pen-to-square"></i> แก้ไข
+                    </button>
+                    <button class="btn btn-xs btn-outline-red" style="font-size: 11px; padding: 3px 10px; border-radius: 4px; color: #ef4444; border: 1px solid #fca5a5; background: #fef2f2; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" onclick="window.deleteProjectOrQuoting('${p.code}');">
+                        <i class="fa-solid fa-trash-can"></i> ลบ
+                    </button>
+                </div>
+                ` : ''}
             `;
 
             card.addEventListener("click", function() {
@@ -19740,6 +19758,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const delBtn = document.getElementById("btn-delete-project");
         if (delBtn) {
             delBtn.style.display = (appState.currentRole === "admin" || appState.currentRole === "pm") ? "" : "none";
+            if (isQuoting) {
+                delBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i> ลบรายการเสนอราคานี้`;
+            } else {
+                delBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i> ลบโครงการนี้`;
+            }
         }
         if (editProjectModal) editProjectModal.classList.add("active");
     };
@@ -19747,6 +19770,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeEditProjectModal = () => {
         if (editProjectModal) editProjectModal.classList.remove("active");
     };
+    window.closeEditProjectModal = closeEditProjectModal;
 
     if (openEditProjectBtn) openEditProjectBtn.addEventListener("click", openEditProjectModal);
     if (closeEditProjectBtn) closeEditProjectBtn.addEventListener("click", closeEditProjectModal);
@@ -19876,33 +19900,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    window.deleteProjectOrQuoting = async function(code) {
+        if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+            showToast("คุณไม่มีสิทธิ์ลบรายการ (จำกัดเฉพาะ Admin และ PM)", "error");
+            return;
+        }
+        if (!code || !projectsData[code]) return;
+        const proj = projectsData[code];
+        const isQuoting = (appState.currentView === "quoting-projects-list") || (proj.status === "งานที่กำลังเสนอราคา" || proj.status === "งานที่รอเสนอราคา" || proj.status === "กำลังเสนอราคา");
+        const itemType = isQuoting ? "รายการเสนอราคา" : "โครงการ";
+
+        if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ${itemType} ${code}: ${proj.name} ออกจากระบบ?\nการลบนี้ไม่สามารถย้อนกลับได้!`)) {
+            return;
+        }
+
+        const projName = proj.name;
+        delete projectsData[code];
+
+        // Save updated list to local storage & cloud (Railway DB & Supabase)
+        saveToLocalStorage();
+        deleteProjectFromSupabase(code);
+
+        if (window.closeEditProjectModal) window.closeEditProjectModal();
+        appState.selectedDetailProject = "all";
+        sessionStorage.setItem("permpoon_last_detail_project", "all");
+
+        showToast(`ลบ${itemType} ${code}: ${projName} ออกจากระบบสำเร็จ!`, "success");
+
+        populateSubnavHospitals();
+        const curYear = document.getElementById("subnav-year-filter") ? document.getElementById("subnav-year-filter").value : "all";
+        populateSubnavProjects(curYear);
+        populateCostHospitals();
+        populateCostProjects();
+        renderOverallDashboard();
+        if (typeof window.renderProjectSelectionPortal === "function") {
+            window.renderProjectSelectionPortal();
+        }
+        if (typeof renderSubnavProjectWorkspace === "function") {
+            renderSubnavProjectWorkspace();
+        }
+    };
+
     if (deleteProjectBtn) {
         deleteProjectBtn.addEventListener("click", function() {
-            if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
-                showToast("คุณไม่มีสิทธิ์ลบโครงการ (จำกัดเฉพาะ Admin และ PM)", "error");
-                return;
-            }
             const code = document.getElementById("edit-project-code").value;
-            if (!code || !projectsData[code]) return;
-            if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบโครงการ ${code} ออกจากระบบ?\nการลบนี้ไม่สามารถย้อนกลับได้!`)) {
-                const projName = projectsData[code].name;
-                delete projectsData[code];
-                
-                // Save updated list to local storage
-                saveToLocalStorage();
-                
-                // Delete from Supabase
-                deleteProjectFromSupabase(code);
-                
-                appState.selectedDetailProject = "";
-                closeEditProjectModal();
-                showToast(`ลบโครงการ ${code}: ${projName} ออกจากระบบสำเร็จ!`, "success");
-                populateSubnavHospitals();
-                populateSubnavProjects(document.getElementById("subnav-year-filter").value);
-                populateCostHospitals();
-                populateCostProjects();
-                renderOverallDashboard();
-                renderSubnavProjectWorkspace();
+            if (window.deleteProjectOrQuoting) {
+                window.deleteProjectOrQuoting(code);
             }
         });
     }
