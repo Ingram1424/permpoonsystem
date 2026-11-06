@@ -3339,7 +3339,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                         <!-- Year selector for the project page -->
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
                             <label for="subnav-year-filter" class="selector-label" style="margin: 0;">ปีโครงการ :</label>
-                            <button type="button" onclick="window.openAddYearModal()" title="เพิ่มปีโครงการใหม่" style="background: none; border: none; color: var(--primary-blue); cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; padding: 0;">
+                            <button type="button" class="hide-pm hide-accounting hide-customer hide-pe hide-technician hide-tech" onclick="window.openAddYearModal()" title="เพิ่มปีโครงการใหม่" style="background: none; border: none; color: var(--primary-blue); cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; padding: 0;">
                                 <i class="fa-solid fa-plus"></i> เพิ่มปี
                             </button>
                         </div>
@@ -3352,7 +3352,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
 
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
                             <label for="subnav-hospital-selector" class="selector-label" style="margin: 0;">เลือกโรงพยาบาล :</label>
-                            <button type="button" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="background: none; border: none; color: var(--primary-blue); cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; padding: 0;">
+                            <button type="button" class="hide-pm hide-accounting hide-customer hide-pe hide-technician hide-tech" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="background: none; border: none; color: var(--primary-blue); cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; padding: 0;">
                                 <i class="fa-solid fa-plus"></i> เพิ่มโรงพยาบาล
                             </button>
                         </div>
@@ -3377,7 +3377,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                 <span>ปรับสถานะโครงการ :</span>
                                 <span id="subnav-status-badge" style="font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: #dcfce7; color: #15803d;">งานที่กำลังดำเนินการ</span>
                             </label>
-                            <select id="subnav-project-status-selector" class="form-control" style="font-size: 11.5px; padding: 6px; height: auto; font-weight: 600; border-radius: var(--radius-sm); background-color: #f8fafc;">
+                            <select id="subnav-project-status-selector" class="form-control hide-accounting hide-customer hide-pe hide-technician hide-tech" style="font-size: 11.5px; padding: 6px; height: auto; font-weight: 600; border-radius: var(--radius-sm); background-color: #f8fafc;">
                                 <option value="งานที่กำลังดำเนินการ">🟢 งานที่กำลังดำเนินการ</option>
                                 <option value="งานที่ดำเนินการเสร็จแล้ว">✅ งานที่ดำเนินการเสร็จแล้ว</option>
                                 <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">🔵 งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
@@ -3386,11 +3386,11 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                         </div>
                         
                         <!-- Create New Project Button (Only visible for PM role) -->
-                        <button class="btn btn-sm btn-primary btn-block hide-customer hide-pe hide-technician" id="sidebar-create-project-btn" style="width: 100%; font-size: 11px; padding: 5px; height: auto; border-radius: var(--radius-sm); margin-top: 6px;">
+                        <button class="btn btn-sm btn-primary btn-block hide-accounting hide-customer hide-pe hide-technician hide-tech" id="sidebar-create-project-btn" style="width: 100%; font-size: 11px; padding: 5px; height: auto; border-radius: var(--radius-sm); margin-top: 6px;">
                             <i class="fa-solid fa-plus-circle"></i> สร้างโครงการใหม่
                         </button>
                         <!-- Edit Project Button -->
-                        <button class="btn btn-sm btn-outline btn-block hide-accounting hide-customer" id="open-edit-project-btn" style="width: 100%; font-size: 11px; padding: 5px; height: auto; border-radius: var(--radius-sm); margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <button class="btn btn-sm btn-outline btn-block hide-accounting hide-customer hide-pe hide-technician hide-tech" id="open-edit-project-btn" style="width: 100%; font-size: 11px; padding: 5px; height: auto; border-radius: var(--radius-sm); margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 5px;">
                             <i class="fa-solid fa-pen-to-square"></i> แก้ไข/ลบโครงการนี้
                         </button>
                         <!-- Copy Share Link Button - PM only -->
@@ -3436,14 +3436,14 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                     </nav>
                 </div>
                 
-                <a href="#" class="nav-item hide-customer hide-pm hide-pe hide-technician" data-view="cost">
+                <a href="#" class="nav-item hide-customer hide-pe hide-technician hide-tech" data-view="cost">
                     <i class="fa-solid fa-hand-holding-dollar"></i>
                     <div class="nav-label">
                         <span class="main-label">Cost Management</span>
                         <span class="sub-label">ค่าใช้จ่ายโครงการ</span>
                     </div>
                 </a>
-                <a href="#" class="nav-item hide-accounting hide-customer hide-pe hide-technician" data-view="permissions-mgmt">
+                <a href="#" class="nav-item hide-pm hide-accounting hide-customer hide-pe hide-technician hide-tech" data-view="permissions-mgmt">
                     <i class="fa-solid fa-user-shield"></i>
                     <div class="nav-label">
                         <span class="main-label">Permissions</span>
@@ -3761,7 +3761,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                 <span class="fin-val text-navy" id="fin-cost-summary">0</span>
                                                 <span class="fin-unit">บาท</span>
                                             </div>
-                                            <div class="fin-box hide-pm" style="padding: 10px;">
+                                            <div class="fin-box" style="padding: 10px;">
                                                 <span class="fin-lbl">กำไร</span>
                                                 <span class="fin-val text-green" id="fin-profit-summary">0</span>
                                                 <span class="fin-unit">บาท</span>
@@ -3773,7 +3773,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                 <span class="fin-val text-muted" id="fin-loss-summary">-</span>
                                                 <span class="fin-unit">บาท</span>
                                             </div>
-                                            <div class="fin-box highlighted-profit hide-pm" style="padding: 10px;">
+                                            <div class="fin-box highlighted-profit" style="padding: 10px;">
                                                 <span class="fin-lbl">กำไรสุทธิ</span>
                                                 <span class="fin-val text-orange" id="fin-netprofit-summary">0</span>
                                                 <span class="fin-unit">บาท</span>
@@ -3863,7 +3863,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     </div>
                                     <span class="unit">บาท</span>
                                 </div>
-                                <div class="mini-kpi-card green hide-pm">
+                                <div class="mini-kpi-card green">
                                     <div class="mini-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                                     <div class="mini-lbl-val">
                                         <span class="lbl">กำไรสุทธิรวม</span>
@@ -3871,7 +3871,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     </div>
                                     <span class="unit">บาท</span>
                                 </div>
-                                <div class="mini-kpi-card purple hide-pm">
+                                <div class="mini-kpi-card purple">
                                     <div class="mini-icon"><i class="fa-solid fa-percent"></i></div>
                                     <div class="mini-lbl-val">
                                         <span class="lbl">อัตรากำไรเฉลี่ย</span>
@@ -3950,8 +3950,8 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                 <th style="padding: 10px 12px; text-align: left; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600;">ชื่อโครงการ / ลูกค้า</th>
                                                 <th style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 140px;">มูลค่าสัญญา (Value)</th>
                                                 <th style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 140px;">ค่าใช้จ่ายจริง (Cost)</th>
-                                                <th class="hide-pm" style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 130px;">กำไรสุทธิ (Profit)</th>
-                                                <th class="hide-pm" style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 90px;">% กำไร</th>
+                                                <th style="padding: 10px 12px; text-align: right; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 130px;">กำไรสุทธิ (Profit)</th>
+                                                <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 90px;">% กำไร</th>
                                                 <th style="padding: 10px 12px; text-align: left; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 150px;">ผู้รับผิดชอบ (PM)</th>
                                                 <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 110px;">สถานะ</th>
                                             </tr>
@@ -4016,7 +4016,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <span class="unit">บาท</span>
                                                 </div>
                                             </div>
-                                            <div class="cost-metric-row hide-pm">
+                                            <div class="cost-metric-row">
                                                 <span class="lbl">กำไร</span>
                                                 <div class="val-group text-green">
                                                     <span class="val" id="cost-v-profit">0</span>
@@ -4030,7 +4030,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <span class="unit">บาท</span>
                                                 </div>
                                             </div>
-                                            <div class="cost-metric-row highlight-net hide-pm">
+                                            <div class="cost-metric-row highlight-net">
                                                 <span class="lbl font-bold">กำไรสุทธิ</span>
                                                 <div class="val-group text-orange">
                                                     <span class="val font-bold" id="cost-v-net">0</span>
@@ -4404,7 +4404,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                     <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); margin: 0;">ปีโครงการ :</label>
-                                    <button type="button" class="btn btn-outline" onclick="window.openAddYearModal()" title="เพิ่มปีโครงการใหม่" style="padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-color: var(--primary-blue); color: var(--primary-blue); background: #eff6ff; height: 22px; border-radius: 4px; cursor: pointer;">
+                                    <button type="button" class="btn btn-outline hide-pm hide-accounting hide-customer hide-pe hide-technician hide-tech" onclick="window.openAddYearModal()" title="เพิ่มปีโครงการใหม่" style="padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-color: var(--primary-blue); color: var(--primary-blue); background: #eff6ff; height: 22px; border-radius: 4px; cursor: pointer;">
                                         <i class="fa-solid fa-plus"></i> เพิ่มปี
                                     </button>
                                 </div>
@@ -4420,7 +4420,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <div>
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                     <label style="font-size: 13px; font-weight: 700; color: var(--navy-dark); margin: 0;">เลือกโรงพยาบาล :</label>
-                                    <button type="button" class="btn btn-outline" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-color: var(--primary-blue); color: var(--primary-blue); background: #eff6ff; height: 22px; border-radius: 4px; cursor: pointer;">
+                                    <button type="button" class="btn btn-outline hide-pm hide-accounting hide-customer hide-pe hide-technician hide-tech" onclick="window.openQuickAddHospitalModal()" title="เพิ่มโรงพยาบาลใหม่" style="padding: 2px 8px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; border-color: var(--primary-blue); color: var(--primary-blue); background: #eff6ff; height: 22px; border-radius: 4px; cursor: pointer;">
                                         <i class="fa-solid fa-plus"></i> เพิ่มโรงพยาบาล
                                     </button>
                                 </div>
@@ -4495,7 +4495,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <!-- Status Selector Box -->
                                     <div class="action-card hide-customer hide-technician hide-tech" style="display: flex; align-items: center; gap: 8px;">
                                         <span style="font-size: 12px; font-weight: 700; color: var(--navy-dark); white-space: nowrap;">สถานะโครงการ:</span>
-                                        <select id="subnav-project-status-selector-inline" class="form-control" style="font-size: 12px; padding: 6px 12px; height: 36px; font-weight: 600; background-color: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; width: 180px;">
+                                        <select id="subnav-project-status-selector-inline" class="form-control hide-accounting hide-customer hide-pe hide-technician hide-tech" style="font-size: 12px; padding: 6px 12px; height: 36px; font-weight: 600; background-color: #ffffff; border: 1px solid var(--border-color); border-radius: 6px; width: 180px;">
                                             <option value="งานที่กำลังดำเนินการ">🟢 งานที่กำลังดำเนินการ</option>
                                             <option value="งานที่ดำเนินการเสร็จแล้ว">✅ งานที่ดำเนินการเสร็จแล้ว</option>
                                             <option value="งานเสร็จแล้วรอส่งงาน/อนุมัติ">🔵 งานเสร็จแล้วรอส่งงาน/อนุมัติ</option>
@@ -4515,7 +4515,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <!-- Action Buttons Group -->
                                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                         <!-- Edit Button -->
-                                        <button class="btn btn-outline btn-sm hide-accounting hide-customer" id="open-edit-project-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: #ffffff; border: 1px solid var(--border-color); color: var(--navy-dark); cursor: pointer; transition: background 0.2s;">
+                                        <button class="btn btn-outline btn-sm hide-accounting hide-customer hide-pe hide-technician hide-tech" id="open-edit-project-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: #ffffff; border: 1px solid var(--border-color); color: var(--navy-dark); cursor: pointer; transition: background 0.2s;">
                                             <i class="fa-solid fa-pen-to-square" style="color: var(--primary-blue); font-size: 13px;"></i> แก้ไข/ลบโครงการ
                                         </button>
                                         <!-- Share Link Button -->
@@ -4646,7 +4646,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <span class="fin-val text-navy" id="detail-fin-cost">0</span>
                                                     <span class="fin-unit">บาท</span>
                                                 </div>
-                                                <div class="fin-box hide-pm">
+                                                <div class="fin-box">
                                                     <span class="fin-lbl">กำไร</span>
                                                     <span class="fin-val text-green" id="detail-fin-profit">0</span>
                                                     <span class="fin-unit">บาท</span>
@@ -4658,7 +4658,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <span class="fin-val text-muted" id="detail-fin-loss">-</span>
                                                     <span class="fin-unit">บาท</span>
                                                 </div>
-                                                <div class="fin-box highlighted-profit hide-pm">
+                                                <div class="fin-box highlighted-profit">
                                                     <span class="fin-lbl">กำไรสุทธิ</span>
                                                     <span class="fin-val text-orange" id="detail-fin-netprofit">0</span>
                                                     <span class="fin-unit">บาท</span>
@@ -4764,7 +4764,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                         <p class="section-subtitle">กำหนดช่วงเวลาวันเริ่มต้น-สิ้นสุด และระบายสีแถบระดับเสียงดัง (แดง = เสียงดังมาก, เหลือง = เสียงดังปานกลาง, เขียว = เสียงดังน้อย)</p>
                                     </div>
                                     <div style="display: flex; gap: 8px; align-items: center;">
-                                        <div style="display: flex; gap: 8px;" class="hide-accounting hide-customer">
+                                        <div style="display: flex; gap: 8px;" class="hide-accounting hide-customer hide-pe hide-technician hide-tech">
                                             <button class="btn btn-sm btn-outline" id="btn-add-gantt-phase" style="font-size: 11px; padding: 6px 12px; height: auto;">
                                                 <i class="fa-solid fa-folder-plus"></i> เพิ่ม Phase
                                             </button>
@@ -4807,7 +4807,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="hide-accounting hide-customer" style="display: flex; flex-direction: column; min-width: 480px; flex-grow: 1; max-width: 650px;">
+                                    <div class="hide-accounting hide-customer hide-pe hide-technician hide-tech" style="display: flex; flex-direction: column; min-width: 480px; flex-grow: 1; max-width: 650px;">
                                         <span style="font-size: 11px; font-weight: 600; color: var(--navy-dark); display: block; margin-bottom: 4px;">เครื่องมือระบายสี (Brush):</span>
                                         <div style="display: flex; gap: 6px; width: 100%;">
                                             <button id="brush-red" class="btn btn-sm active" style="font-size: 10px; padding: 5px 6px; height: 32px; background: #f87171; color: #7f1d1d; border: 2px solid #b91c1c; font-weight: 800; cursor: pointer; border-radius: 4px; border-style: solid; white-space: nowrap; flex: 1; display: inline-flex; align-items: center; justify-content: center;">แดง (ดังมาก)</button>
@@ -4893,19 +4893,19 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                         </div>
                                     </div>
                                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="btn-sync-from-gantt" style="font-size: 11px; padding: 6px 12px; height: auto; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-weight: 600;" title="ดึงรายการหมวดงานและงานย่อยจาก Plan Work มาใส่ในตาราง S-Curve พร้อมคำนวณ % แผนงาน">
+                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-pe hide-technician hide-tech" id="btn-sync-from-gantt" style="font-size: 11px; padding: 6px 12px; height: auto; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-weight: 600;" title="ดึงรายการหมวดงานและงานย่อยจาก Plan Work มาใส่ในตาราง S-Curve พร้อมคำนวณ % แผนงาน">
                                             <i class="fa-solid fa-cloud-arrow-down"></i> ดึงรายการจาก Plan Work
                                         </button>
-                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="btn-add-scurve-month" style="font-size: 11px; padding: 6px 12px; height: auto;">
+                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-pe hide-technician hide-tech" id="btn-add-scurve-month" style="font-size: 11px; padding: 6px 12px; height: auto;">
                                             <i class="fa-solid fa-calendar-plus"></i> เพิ่มเดือน
                                         </button>
-                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="btn-add-scurve-main-task" style="font-size: 11px; padding: 6px 12px; height: auto;">
+                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-pe hide-technician hide-tech" id="btn-add-scurve-main-task" style="font-size: 11px; padding: 6px 12px; height: auto;">
                                             <i class="fa-solid fa-list"></i> เพิ่มงานหลัก
                                         </button>
-                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="btn-add-scurve-sub-task" style="font-size: 11px; padding: 6px 12px; height: auto;">
+                                        <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-pe hide-technician hide-tech" id="btn-add-scurve-sub-task" style="font-size: 11px; padding: 6px 12px; height: auto;">
                                             <i class="fa-solid fa-bars-staggered"></i> เพิ่มงานย่อย
                                         </button>
-                                        <button class="btn btn-sm btn-primary hide-accounting hide-customer" id="btn-save-scurve-data" style="font-size: 11px; padding: 6px 12px; height: auto;">
+                                        <button class="btn btn-sm btn-primary hide-accounting hide-customer hide-technician hide-tech" id="btn-save-scurve-data" style="font-size: 11px; padding: 6px 12px; height: auto;">
                                             <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล
                                         </button>
                                         <button class="btn btn-sm btn-outline" id="btn-print-scurve" style="font-size: 11px; padding: 6px 12px; height: auto; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
@@ -4968,7 +4968,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <section class="section-card">
                                 <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
                                     <h2 class="section-title"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> รายงานการปฏิบัติงานรายวัน (Daily Site Report)</h2>
-                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="subnav-open-daily-report-modal-btn">
+                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-technician hide-tech" id="subnav-open-daily-report-modal-btn">
                                         <i class="fa-solid fa-file-signature"></i> อัปโหลดรายงานรายวัน
                                     </button>
                                 </div>
@@ -5026,7 +5026,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                 <span class="unit">บาท</span>
                                             </div>
                                         </div>
-                                        <div class="cost-metric-row hide-pm">
+                                        <div class="cost-metric-row">
                                             <span class="lbl">กำไร</span>
                                             <div class="val-group">
                                                 <span class="val text-green" id="subtab-cost-v-profit">0</span>
@@ -5048,10 +5048,10 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="panel-subtitle-thai mb-0">รายการเบิกจ่ายต้นทุนของโครงการ</h4>
                                         <div style="display: flex; gap: 8px;">
-                                            <button class="btn btn-sm btn-outline-blue hide-accounting" id="subtab-open-expense-modal-btn" style="font-family: 'Prompt'; font-size: 11px;">
+                                            <button class="btn btn-sm btn-outline-blue hide-pe hide-technician hide-tech hide-customer" id="subtab-open-expense-modal-btn" style="font-family: 'Prompt'; font-size: 11px;">
                                                 <i class="fa-solid fa-plus"></i> บันทึกจ่ายตรง
                                             </button>
-                                            <button class="btn btn-sm btn-primary hide-accounting" id="subtab-open-drawdown-modal-btn" style="font-family: 'Prompt'; font-size: 11px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light)); border: none; box-shadow: var(--shadow-sm);">
+                                            <button class="btn btn-sm btn-primary hide-pe hide-technician hide-tech hide-customer" id="subtab-open-drawdown-modal-btn" style="font-family: 'Prompt'; font-size: 11px; background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light)); border: none; box-shadow: var(--shadow-sm);">
                                                 <i class="fa-solid fa-paper-plane"></i> ขอเบิกงบโครงการ
                                             </button>
                                         </div>
@@ -5065,7 +5065,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                     <th>ประเภท</th>
                                                     <th>สถานะ</th>
                                                     <th class="text-right">จำนวนเงิน</th>
-                                                    <th class="text-center hide-accounting" style="width: 130px;">จัดการ</th>
+                                                    <th class="text-center hide-pe hide-technician hide-tech hide-customer" style="width: 130px;">จัดการ</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="subtab-expenses-table-body">
@@ -5111,7 +5111,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                             <div class="info-col label">ระยะเวลาสัญญา</div>
                                             <div class="info-col val" id="subnav-doc-dates">-</div>
                                         </div>
-                                        <div class="info-row hide-customer hide-technician hide-tech">
+                                        <div class="info-row hide-customer hide-technician hide-tech hide-pe">
                                             <div class="info-col label">มูลค่าโครงการ</div>
                                             <div class="info-col val highlight-val" id="subnav-doc-value">0 บาท</div>
                                         </div>
@@ -7522,6 +7522,10 @@ window.refreshYearDropdowns = function(selectedYear) {
 try { window.refreshYearDropdowns(); } catch (e) {}
 
 window.openAddYearModal = function() {
+    if (appState.currentRole !== "admin") {
+        showToast("จำกัดเฉพาะ Admin เท่านั้น", "warning");
+        return;
+    }
     const modal = document.getElementById("quick-add-year-modal");
     if (!modal) return;
     modal.style.display = "flex";
@@ -8099,11 +8103,11 @@ function switchView(viewName) {
         showToast("คุณไม่มีสิทธิ์เข้าถึงหน้านี้", "warning");
         viewName = "projects-list";
     }
-    if (appState.currentRole === "pm" && viewName === "cost") {
-        showToast("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (จำกัดเฉพาะ Admin และ Accounting)", "warning");
+    if (appState.currentRole !== "admin" && appState.currentRole !== "accounting" && appState.currentRole !== "pm" && viewName === "cost") {
+        showToast("คุณไม่มีสิทธิ์เข้าถึงหน้านี้", "warning");
         viewName = "projects-list";
     }
-    if (appState.currentRole === "accounting" && viewName === "permissions-mgmt") {
+    if (appState.currentRole !== "admin" && viewName === "permissions-mgmt") {
         showToast("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (จำกัดเฉพาะ Admin เท่านั้น)", "warning");
         viewName = "projects-list";
     }
@@ -8456,7 +8460,7 @@ function renderHospitalsGrid(activeProjects) {
                 totalProfit += (p.value || 0) - (p.cost || 0);
             });
             
-            const hideCost = (appState.currentRole === "customer" || appState.currentRole === "technician" || appState.currentRole === "tech");
+            const hideCost = (appState.currentRole === "customer" || appState.currentRole === "technician" || appState.currentRole === "tech" || appState.currentRole === "pe");
             
             const financialsHTML = hideCost 
                 ? `<div style="font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 12px; padding: 10px; background: var(--bg-light); border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color);">
@@ -8471,7 +8475,7 @@ function renderHospitalsGrid(activeProjects) {
                          <span style="color: var(--text-muted); font-weight: 600;">ต้นทุนโครงการรวม</span>
                          <span style="color: var(--navy-dark); font-weight: 700;">${formatNumber(totalCost)} บาท</span>
                      </div>
-                     <div class="hide-pm" style="display: flex; justify-content: space-between; font-size: 11px; border-top: 1px dashed var(--border-color); padding-top: 6px;">
+                     <div style="display: flex; justify-content: space-between; font-size: 11px; border-top: 1px dashed var(--border-color); padding-top: 6px;">
                          <span style="color: var(--navy-medium); font-weight: 700;">กำไรรวมประมาณการ</span>
                          <span style="color: var(--color-inprogress); font-weight: 700;">${formatNumber(totalProfit)} บาท</span>
                      </div>
@@ -8496,7 +8500,7 @@ function renderHospitalsGrid(activeProjects) {
                     : `<div style="display: flex; gap: 16px; font-size: 11px; background: rgba(255,255,255,0.7); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid #cbd5e1;">
                          <div><span style="color: var(--text-muted); font-size: 10px;">มูลค่า:</span> <strong style="color: var(--navy-dark);">${formatNumber(p.value)}</strong></div>
                          <div><span style="color: var(--text-muted); font-size: 10px;">ต้นทุน:</span> <strong style="color: var(--navy-dark);">${formatNumber(p.cost)}</strong></div>
-                         <div class="hide-pm"><span style="color: var(--text-muted); font-size: 10px;">กำไร:</span> <strong style="color: ${projectProfit >= 0 ? 'var(--color-inprogress)' : '#ef4444'};">${formatNumber(projectProfit)}</strong></div>
+                         <div><span style="color: var(--text-muted); font-size: 10px;">กำไร:</span> <strong style="color: ${projectProfit >= 0 ? 'var(--color-inprogress)' : '#ef4444'};">${formatNumber(projectProfit)}</strong></div>
                        </div>`;
                 
                 const poDateStr = p.poDate || p.start || '15/01/2026';
@@ -8879,8 +8883,9 @@ function renderSubnavProjectWorkspace() {
                 inlineStatusBadge.style.color = "#475569";
             }
         } else {
-            subnavStatusSelect.disabled = false;
-            if (inlineStatusSelect) inlineStatusSelect.disabled = false;
+            const canChangeStatus = (appState.currentRole === "admin" || appState.currentRole === "pm");
+            subnavStatusSelect.disabled = !canChangeStatus;
+            if (inlineStatusSelect) inlineStatusSelect.disabled = !canChangeStatus;
             
             let currentStatus = project.status || "งานที่กำลังดำเนินการ";
             if (currentStatus === "กำลังดำเนินการ" || currentStatus === "กำลังเสนอราคา") currentStatus = "งานที่กำลังดำเนินการ";
@@ -10033,7 +10038,7 @@ function updateScurveTotals(project) {
     footerHtml += `<td class="hide-accounting hide-customer"></td></tr>`;
 
     // Add manually editable cumulative plan progress row
-    const canEditPlan = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe") && appState.selectedDetailProject !== "all";
+    const canEditPlan = (appState.currentRole === "pm" || appState.currentRole === "admin") && appState.selectedDetailProject !== "all";
     const planReadonlyAttr = canEditPlan ? '' : 'readonly';
     const planEditInputStyle = `style="width: 100%; font-size: 10px; text-align: center; padding: 3px 2px; border: 1px solid var(--border-color); border-radius: 4px; background: #fff; color: #1e40af; font-weight: bold;"`;
     const planInputStyle = `style="width: 100%; font-size: 10px; text-align: center; padding: 3px 2px; border: 1px solid transparent; background: transparent; color: #1e40af; font-weight: bold;"`;
@@ -10817,6 +10822,7 @@ function initScurveAutocomplete(project, textarea) {
 
 function renderSubnavActualProgress(project) {
     const canEdit = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe") && appState.selectedDetailProject !== "all";
+    const isStructureEditor = (appState.currentRole === "pm" || appState.currentRole === "admin") && appState.selectedDetailProject !== "all";
     
     // Bind and set S-Curve Timeframe dropdown
     const scurveModeSelect = document.getElementById("scurve-timeframe-mode");
@@ -10916,14 +10922,14 @@ function renderSubnavActualProgress(project) {
     } else {
         project.scurveMonths.forEach((month, mIdx) => {
             headerRow1 += `<th colspan="4" style="padding: 8px; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); font-size: 13.5px; font-weight: 700;">
-                ${canEdit ? `<input type="text" class="scurve-month-name" data-idx="${mIdx}" value="${month}" style="width: 100px; font-size: 12.5px; font-weight: 700; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 2px 4px;">` : month}
+                ${isStructureEditor ? `<input type="text" class="scurve-month-name" data-idx="${mIdx}" value="${month}" style="width: 100px; font-size: 12.5px; font-weight: 700; text-align: center; border: 1px solid #ccc; border-radius: 4px; padding: 2px 4px;">` : month}
             </th>`;
             for (let w = 1; w <= 4; w++) {
                 headerRow2 += `<th style="padding: 6px; width: 45px; font-weight: 600; font-size: 11.5px; border-left: ${w===1 ? '1px' : '0'} solid var(--border-color); border-bottom: 1px solid var(--border-color);">${w}</th>`;
             }
         });
     }
-    headerRow1 += `<th rowspan="2" class="hide-accounting hide-customer" style="padding: 10px; width: 40px; border: 1px solid var(--border-color);">ลบ</th></tr>`;
+    headerRow1 += `<th rowspan="2" class="hide-accounting hide-customer hide-pe hide-technician hide-tech" style="padding: 10px; width: 40px; border: 1px solid var(--border-color);">ลบ</th></tr>`;
     headerRow2 += `</tr>`;
     head.innerHTML = headerRow1 + headerRow2;
  
@@ -10983,7 +10989,7 @@ function renderSubnavActualProgress(project) {
                 `;
             } else {
                 // แถวงานปกติ (งานหลัก หรือ งานย่อยสำหรับดูงาน)
-                const typeBadge = canEdit ? `
+                const typeBadge = isStructureEditor ? `
                     <button type="button" onclick="toggleScurveRowType(${idx})" title="คลิกเพื่อสลับระหว่างงานหลักและงานย่อย" style="margin-top: 2px; font-size: 9.5px; padding: 1px 4px; border-radius: 3px; border: none; cursor: pointer; background: ${isSub ? '#f1f5f9' : '#dbeafe'}; color: ${isSub ? '#64748b' : '#1e40af'}; font-weight: 700; display: inline-block;">
                         ${isSub ? 'ย่อย' : 'หลัก'}
                     </button>
@@ -11003,7 +11009,7 @@ function renderSubnavActualProgress(project) {
                     <td style="padding: 6px 10px; min-width: 350px;">
                         <div style="display: flex; gap: 6px; align-items: flex-start; padding-left: ${isSub ? '20px' : '0'};">
                             ${isSub ? '<span style="color:#94a3b8; font-weight: 600; margin-top: 4px;">↳</span>' : ''}
-                            <textarea class="scurve-item-name" data-idx="${idx}" placeholder="${isSub?'ชื่องานย่อย (ดูงาน)':'ชื่องานหลัก'}" ${readonlyAttr} style="width: 100%; font-size: 12.5px; padding: 5px 8px; border: 1px solid ${canEdit?'var(--border-color)':'transparent'}; border-radius: 4px; background: ${canEdit?'#fff':'transparent'}; font-weight: ${isSub?'normal':'700'}; color: ${isSub?'#475569':'#0f172a'}; resize: none; overflow: hidden; height: auto;" rows="1" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';" onkeydown="if(event.key === 'Enter') { event.preventDefault(); this.blur(); }">${item.name || ''}</textarea>
+                            <textarea class="scurve-item-name" data-idx="${idx}" placeholder="${isSub?'ชื่องานย่อย (ดูงาน)':'ชื่องานหลัก'}" ${isStructureEditor ? '' : 'readonly'} style="width: 100%; font-size: 12.5px; padding: 5px 8px; border: 1px solid ${canEdit?'var(--border-color)':'transparent'}; border-radius: 4px; background: ${canEdit?'#fff':'transparent'}; font-weight: ${isSub?'normal':'700'}; color: ${isSub?'#475569':'#0f172a'}; resize: none; overflow: hidden; height: auto;" rows="1" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';" onkeydown="if(event.key === 'Enter') { event.preventDefault(); this.blur(); }">${item.name || ''}</textarea>
                         </div>
                     </td>
                     ${hideBudget ? '' : `
@@ -11070,8 +11076,8 @@ function renderSubnavActualProgress(project) {
                 }
 
                 rowHtml += `
-                    <td class="hide-accounting hide-customer" style="padding: 4px; text-align: center;">
-                        ${canEdit ? `<button type="button" onclick="deleteScurveRow(${idx})" title="ลบรายการ" style="background:none; border:none; color:#e63946; cursor:pointer; font-size:13px;"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    <td class="hide-accounting hide-customer hide-pe hide-technician hide-tech" style="padding: 4px; text-align: center;">
+                        ${isStructureEditor ? `<button type="button" onclick="deleteScurveRow(${idx})" title="ลบรายการ" style="background:none; border:none; color:#e63946; cursor:pointer; font-size:13px;"><i class="fa-solid fa-trash-can"></i></button>` : ''}
                     </td>
                 `;
             }
@@ -11469,8 +11475,8 @@ function renderSubnavCostTab(project) {
     const tableBody = document.getElementById("subtab-expenses-table-body");
     if (tableBody) {
         tableBody.innerHTML = "";
-        const isPM = (appState.currentRole === "pm" || appState.currentRole === "admin");
-        const colCount = isPM ? 6 : 5;
+        const canManageExpenses = (appState.currentRole === "admin" || appState.currentRole === "pm" || appState.currentRole === "accounting");
+        const colCount = canManageExpenses ? 6 : 5;
         if (!project.expenses || project.expenses.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="${colCount}" class="text-center text-muted py-4">ไม่มีข้อมูลธุรกรรมรายจ่าย</td></tr>`;
             return;
@@ -11495,7 +11501,7 @@ function renderSubnavCostTab(project) {
             const statusHTML = `<span class="badge-status ${badgeClass}" title="${statusText}">${statusText}</span>`;
 
             const actionsHTML = `
-                <td class="text-center hide-accounting">
+                <td class="text-center hide-pe hide-technician hide-tech hide-customer">
                     <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
                         <button class="btn btn-xs btn-outline-blue btn-edit-expense" 
                             data-idx="${idx}"
@@ -11700,7 +11706,7 @@ function renderSubnavPlanWork(project) {
     const docManagerInput = document.getElementById("gantt-doc-manager");
     const docPhoneInput = document.getElementById("gantt-doc-phone");
 
-    const canEdit = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe") && appState.selectedDetailProject !== "all";
+    const canEdit = (appState.currentRole === "pm" || appState.currentRole === "admin") && appState.selectedDetailProject !== "all";
 
     if (startDateInput) {
         startDateInput.value = project.ganttData.startDate;
@@ -12479,28 +12485,34 @@ function renderSubnavDailyReports(project) {
         return;
     }
     
-    const isPM = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe");
-    const isCustomer = (appState.currentRole === "customer" || appState.currentRole === "technician" || appState.currentRole === "tech");
+    const canEditDaily = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe");
+    const canDeleteDaily = (appState.currentRole === "pm" || appState.currentRole === "admin");
+    const canCustomerSign = (appState.currentRole === "customer" || appState.currentRole === "admin" || appState.currentRole === "pm" || appState.currentRole === "pe");
     
     filteredReports.forEach((rep) => {
         const idx = reports.indexOf(rep);
         const card = document.createElement("div");
         card.className = "feed-item";
         
-        const actionsHTML = isPM 
-            ? `
+        let actionsHTML = '';
+        if (canEditDaily) {
+            actionsHTML += `
                <button class="btn btn-xs btn-outline-blue btn-edit-daily-report" 
                    data-idx="${idx}"
                    style="font-size: 10.5px; padding: 3px 8px; display: flex; align-items: center; gap: 4px; background: none; border: 1px solid #1d4ed8; color: #1d4ed8; border-radius: 4px; cursor: pointer;">
                    <i class="fa-solid fa-pen"></i> แก้ไข
                </button>
+            `;
+        }
+        if (canDeleteDaily) {
+            actionsHTML += `
                <button class="btn btn-xs btn-outline-red btn-delete-daily-report" 
                    data-idx="${idx}"
                    style="font-size: 10.5px; padding: 3px 8px; display: flex; align-items: center; gap: 4px; background: none; border: 1px solid #ef4444; color: #ef4444; border-radius: 4px; cursor: pointer;">
                    <i class="fa-solid fa-trash-can"></i> ลบ
                </button>
-              ` 
-            : ``;
+            `;
+        }
 
         card.style = "position: relative; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; background: #fff; box-shadow: var(--card-shadow);";
         
@@ -12513,11 +12525,13 @@ function renderSubnavDailyReports(project) {
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span class="badge-status completed" style="background-color: #eff6ff; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;">เสร็จสิ้นวันนี้</span>
                     
+                    ${canCustomerSign ? `
                     <button class="btn btn-xs btn-outline-blue btn-customer-sign-report" 
                         data-idx="${idx}"
                         style="font-size: 10.5px; padding: 3px 8px; display: flex; align-items: center; gap: 4px; background: none; border: 1px solid #1d4ed8; color: #1d4ed8; border-radius: 4px; cursor: pointer;">
                         <i class="fa-solid fa-signature"></i> ลูกค้าเซ็นรับรอง
                     </button>
+                    ` : ''}
                     
                     <button class="btn btn-xs btn-outline-green daily-report-export-pdf" 
                         data-idx="${idx}"
@@ -12677,6 +12691,10 @@ function renderSubnavDailyReports(project) {
 }
 
 function deleteDailyReport(idx) {
+    if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+        showToast("คุณไม่มีสิทธิ์ลบรายงานประจำวัน (จำกัดเฉพาะ Admin และ PM)", "warning");
+        return;
+    }
     const project = projectsData[appState.selectedDetailProject];
     if (!project) return;
     
@@ -12974,8 +12992,8 @@ function renderProjectCostSummaryTable() {
             </td>
             <td style="padding: 10px 12px; text-align: right; font-weight: 600; color: var(--navy-dark);">${formatNumber(val)}</td>
             <td style="padding: 10px 12px; text-align: right; font-weight: 600; color: #c2410c;">${formatNumber(cost)}</td>
-            <td class="hide-pm" style="padding: 10px 12px; text-align: right; font-weight: 600; color: ${profit >= 0 ? '#15803d' : '#dc2626'};">${formatNumber(profit)}</td>
-            <td class="hide-pm" style="padding: 10px 12px; text-align: center;">
+            <td style="padding: 10px 12px; text-align: right; font-weight: 600; color: ${profit >= 0 ? '#15803d' : '#dc2626'};">${formatNumber(profit)}</td>
+            <td style="padding: 10px 12px; text-align: center;">
                 <span class="badge-percent" style="font-size: 11px; padding: 2px 6px; background: ${profit >= 0 ? '#dcfce7; color: #15803d' : '#fee2e2; color: #dc2626'}; border-radius: 4px; font-weight: 600;">${pct}%</span>
             </td>
             <td style="padding: 10px 12px; font-size: 11.5px; color: var(--text-dark);">${p.manager || "-"}</td>
@@ -13857,6 +13875,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const subnavStatusSelect = document.getElementById("subnav-project-status-selector");
     if (subnavStatusSelect) {
         subnavStatusSelect.addEventListener("change", function() {
+            if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+                showToast("คุณไม่มีสิทธิ์เปลี่ยนสถานะโครงการ (จำกัดเฉพาะ Admin และ PM)", "warning");
+                return;
+            }
             const activeCode = appState.selectedDetailProject;
             if (!activeCode || activeCode === "all" || !projectsData[activeCode]) return;
             const newStatus = this.value;
@@ -15224,6 +15246,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.openDailyReportModal = (editIdx = -1) => {
+        if (appState.currentRole !== "admin" && appState.currentRole !== "pm" && appState.currentRole !== "pe") {
+            showToast("คุณไม่มีสิทธิ์เขียนหรือแก้ไขรายงานรายวัน", "warning");
+            return;
+        }
         const project = projectsData[appState.selectedDetailProject];
         if (!project) {
             showToast("ไม่พบข้อมูลโครงการ", "error");
@@ -17032,6 +17058,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Save Action
     if (btnSaveGantt) {
         btnSaveGantt.addEventListener("click", function() {
+            if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+                return showToast("คุณไม่มีสิทธิ์แก้ไขแผนงาน Gantt (จำกัดเฉพาะ Admin และ PM)", "warning");
+            }
             const proj = getActiveProj();
             if (!proj) return showToast("กรุณาเลือกโครงการเฉพาะก่อน", "warning");
 
@@ -19595,6 +19624,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const openEditProjectBtn = document.getElementById("open-edit-project-btn");
 
     const openEditProjectModal = () => {
+        if (appState.currentRole !== "admin" && appState.currentRole !== "pm") {
+            showToast("คุณไม่มีสิทธิ์แก้ไขโครงการ (จำกัดเฉพาะ Admin และ PM)", "warning");
+            return;
+        }
         const code = appState.selectedDetailProject;
         if (!code || code === "all") {
             showToast("กรุณาเลือกรายการเฉพาะเจาะจงก่อนแก้ไข", "warning");
@@ -19706,7 +19739,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const delBtn = document.getElementById("btn-delete-project");
         if (delBtn) {
-            delBtn.style.display = (appState.currentRole === "pe") ? "none" : "";
+            delBtn.style.display = (appState.currentRole === "admin") ? "" : "none";
         }
         if (editProjectModal) editProjectModal.classList.add("active");
     };
@@ -19845,6 +19878,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (deleteProjectBtn) {
         deleteProjectBtn.addEventListener("click", function() {
+            if (appState.currentRole !== "admin") {
+                showToast("คุณไม่มีสิทธิ์ลบโครงการ (จำกัดเฉพาะ Admin เท่านั้น)", "error");
+                return;
+            }
             const code = document.getElementById("edit-project-code").value;
             if (!code || !projectsData[code]) return;
             if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบโครงการ ${code} ออกจากระบบ?\nการลบนี้ไม่สามารถย้อนกลับได้!`)) {
@@ -21001,6 +21038,10 @@ window.addNewHospital = function(nameOverride) {
 };
 
 window.openQuickAddHospitalModal = function() {
+    if (appState.currentRole !== "admin") {
+        showToast("จำกัดเฉพาะ Admin เท่านั้น", "warning");
+        return;
+    }
     const modal = document.getElementById("quick-add-hospital-modal");
     if (!modal) return;
     modal.style.display = "flex";
