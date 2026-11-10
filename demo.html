@@ -4968,7 +4968,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <section class="section-card">
                                 <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
                                     <h2 class="section-title"><i class="fa-solid fa-calendar-day text-blue mr-1"></i> รายงานการปฏิบัติงานรายวัน (Daily Site Report)</h2>
-                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer hide-technician hide-tech" id="subnav-open-daily-report-modal-btn">
+                                    <button class="btn btn-sm btn-outline hide-accounting hide-customer" id="subnav-open-daily-report-modal-btn">
                                         <i class="fa-solid fa-file-signature"></i> อัปโหลดรายงานรายวัน
                                     </button>
                                 </div>
@@ -7421,7 +7421,15 @@ const appState = {
     currentCustomerUser: localStorage.getItem("permpoon_current_customer_user") || "user1",
     userPermissions: null, // Loaded below
     customerAccounts: null, // Loaded below
-    signerRolesHistory: ["Chief Engineer", "Supervisor", "Admin"],
+    signerRolesHistory: [
+        "ผู้ส่งรายงาน (ช่างหน้างาน)",
+        "ผู้ส่งรายงาน (ช่างผู้ควบคุมงาน)",
+        "ผู้ส่งรายงาน (วิศวกรโครงการ)",
+        "ผู้ส่งรายงาน (ผู้จัดการโครงการ)",
+        "Chief Engineer",
+        "Supervisor",
+        "Admin"
+    ],
     signerNamesHistory: [],
     hospitalsList: [
         "อาคารเพิ่มพูน ทาวเวอร์",
@@ -12543,7 +12551,7 @@ function renderSubnavDailyReports(project) {
         return;
     }
     
-    const canEditDaily = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe");
+    const canEditDaily = (appState.currentRole === "pm" || appState.currentRole === "admin" || appState.currentRole === "pe" || appState.currentRole === "tech" || appState.currentRole === "technician");
     const canDeleteDaily = (appState.currentRole === "pm" || appState.currentRole === "admin");
     const canCustomerSign = (appState.currentRole === "customer" || appState.currentRole === "admin" || appState.currentRole === "pm" || appState.currentRole === "pe");
     
@@ -15315,7 +15323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.openDailyReportModal = (editIdx = -1) => {
-        if (appState.currentRole !== "admin" && appState.currentRole !== "pm" && appState.currentRole !== "pe") {
+        if (appState.currentRole !== "admin" && appState.currentRole !== "pm" && appState.currentRole !== "pe" && appState.currentRole !== "tech" && appState.currentRole !== "technician") {
             showToast("คุณไม่มีสิทธิ์เขียนหรือแก้ไขรายงานรายวัน", "warning");
             return;
         }
@@ -15382,6 +15390,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         addSignerRow(sig);
                     });
                 }
+            } else {
+                let defaultSenderRole = "ผู้ส่งรายงาน (ช่างหน้างาน)";
+                if (appState.currentRole === "pe") {
+                    defaultSenderRole = "ผู้ส่งรายงาน (วิศวกรโครงการ)";
+                } else if (appState.currentRole === "pm") {
+                    defaultSenderRole = "ผู้ส่งรายงาน (ผู้จัดการโครงการ)";
+                } else if (appState.currentRole === "admin") {
+                    defaultSenderRole = "ผู้ส่งรายงาน (Admin)";
+                }
+                const currentUserName = document.getElementById("username-display") ? document.getElementById("username-display").textContent.trim() : "";
+                addSignerRow({
+                    name: (currentUserName && !currentUserName.includes("Super Admin") && !currentUserName.includes("Project Manager") && !currentUserName.includes("Customer View")) ? currentUserName : "",
+                    role: defaultSenderRole
+                });
             }
         }
         
