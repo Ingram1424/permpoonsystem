@@ -53,6 +53,10 @@ def init_db():
                     data JSONB,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
+                CREATE TABLE IF NOT EXISTS deleted_projects (
+                    code VARCHAR(100) PRIMARY KEY,
+                    deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
             """)
         else:
             cur.execute("""
@@ -60,6 +64,10 @@ def init_db():
                     code TEXT PRIMARY KEY,
                     data TEXT,
                     updated_at TEXT
+                );
+                CREATE TABLE IF NOT EXISTS deleted_projects (
+                    code TEXT PRIMARY KEY,
+                    deleted_at TEXT
                 );
             """)
         conn.commit()
@@ -217,12 +225,24 @@ async def get_projects():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+        
+        # Read deleted projects to never resurrect deleted items
+        deleted_set = set()
+        try:
+            cur.execute("SELECT code FROM deleted_projects")
+            del_rows = cur.fetchall()
+            deleted_set = {r[0] if isinstance(r, tuple) else r["code"] for r in del_rows}
+        except Exception:
+            pass
+
         cur.execute("SELECT code, data FROM projects")
         rows = cur.fetchall()
         
         projects = {}
         for row in rows:
             code = row[0] if isinstance(row, tuple) else row["code"]
+            if code in deleted_set:
+                continue
             raw_data = row[1] if isinstance(row, tuple) else row["data"]
             data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
             if isinstance(data, dict):
@@ -235,16 +255,18 @@ async def get_projects():
                 data.setdefault("jobs", {"total": 0, "inprogress": 0, "completed": 0, "delayed": 0})
             projects[code] = data
             
-        # If DB is empty, seed initial Permpoon projects
-        if not projects:
+        # If DB is empty, seed initial Permpoon projects (excluding any deleted)
+        if not projects and not deleted_set:
             for code, data in DEFAULT_PERMPOON_PROJECTS.items():
+                if code in deleted_set:
+                    continue
                 save_data_str = json.dumps(data) if not (DATABASE_URL and HAS_PSYCOPG2) else data
                 if DATABASE_URL and HAS_PSYCOPG2:
                     cur.execute("INSERT INTO projects (code, data) VALUES (%s, %s) ON CONFLICT (code) DO NOTHING", (code, json.dumps(data)))
                 else:
                     cur.execute("INSERT OR IGNORE INTO projects (code, data, updated_at) VALUES (?, ?, ?)", (code, json.dumps(data), datetime.datetime.now().isoformat()))
             conn.commit()
-            projects = DEFAULT_PERMPOON_PROJECTS
+            projects = {k: v for k, v in DEFAULT_PERMPOON_PROJECTS.items() if k not in deleted_set}
             
         return {"status": "success", "data": projects}
     except Exception as e:
@@ -270,11 +292,14 @@ async def save_project(payload: ProjectPayload):
                 VALUES (%s, %s, CURRENT_TIMESTAMP)
                 ON CONFLICT (code) DO UPDATE SET data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP;
             """, (code, json.dumps(data)))
+            # If re-saving, unmark from deleted_projects
+            cur.execute("DELETE FROM deleted_projects WHERE code = %s", (code,))
         else:
             cur.execute("""
                 INSERT OR REPLACE INTO projects (code, data, updated_at)
                 VALUES (?, ?, ?);
             """, (code, json.dumps(data), datetime.datetime.now().isoformat()))
+            cur.execute("DELETE FROM deleted_projects WHERE code = ?", (code,))
         conn.commit()
         return {"status": "success", "code": code}
     except Exception as e:
@@ -291,8 +316,10 @@ async def delete_project(code: str):
         cur = conn.cursor()
         if DATABASE_URL and HAS_PSYCOPG2:
             cur.execute("DELETE FROM projects WHERE code = %s", (code,))
+            cur.execute("INSERT INTO deleted_projects (code) VALUES (%s) ON CONFLICT (code) DO NOTHING", (code,))
         else:
             cur.execute("DELETE FROM projects WHERE code = ?", (code,))
+            cur.execute("INSERT OR IGNORE INTO deleted_projects (code, deleted_at) VALUES (?, ?)", (code, datetime.datetime.now().isoformat()))
         conn.commit()
         return {"status": "success", "deleted": code}
     except Exception as e:

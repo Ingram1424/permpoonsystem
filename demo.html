@@ -6292,10 +6292,16 @@ try {
         const parsed = JSON.parse(savedData);
         removeBase64FromObject(parsed);
         projectsData = {};
+        const startupDeletedList = (function(){
+            try { const r = localStorage.getItem("permpoon_deleted_projects"); return r ? JSON.parse(r) : []; } catch(e){ return []; }
+        })();
         Object.keys(parsed).forEach(k => {
             // STRICT FILTER: NEVER include Technical Water POs or hospital projects in Permpoon!
             const isTw = k.startsWith("PO ") || k.startsWith("TW-") || (parsed[k] && parsed[k].customer && (parsed[k].customer.includes("พญาไท") || parsed[k].customer.includes("เปาโล")));
             if (!k.startsWith("SHARE:") && !k.startsWith("FILE:") && !isTw) {
+                if (startupDeletedList.includes(k)) {
+                    return; // Skip previously deleted project!
+                }
                 if (parsed[k]) {
                     parsed[k].code = k;
                     if (parsed[k].isSynced === undefined) {
@@ -6652,14 +6658,53 @@ async function syncAllProjectsToSupabase() {
     }
 }
 
+// --- DELETED PROJECTS (TOMBSTONES) TO PREVENT RESURRECTION ---
+function getDeletedProjects() {
+    try {
+        const raw = localStorage.getItem("permpoon_deleted_projects");
+        return raw ? JSON.parse(raw) : [];
+    } catch(e) {
+        return [];
+    }
+}
+
+function markProjectAsDeleted(code) {
+    if (!code) return;
+    try {
+        const list = getDeletedProjects();
+        if (!list.includes(code)) {
+            list.push(code);
+            localStorage.setItem("permpoon_deleted_projects", JSON.stringify(list));
+        }
+    } catch(e) {}
+}
+
+function unmarkProjectAsDeleted(code) {
+    if (!code) return;
+    try {
+        let list = getDeletedProjects();
+        list = list.filter(c => c !== code);
+        localStorage.setItem("permpoon_deleted_projects", JSON.stringify(list));
+    } catch(e) {}
+}
+
 // --- RAILWAY POSTGRESQL BACKEND INTEGRATION ---
 async function syncWithRailwayBackend() {
     try {
         const res = await fetch("/api/projects");
         if (res.ok) {
             const json = await res.json();
-            if (json && json.status === "success" && json.data && Object.keys(json.data).length > 0) {
-                projectsData = json.data;
+            if (json && json.status === "success" && json.data) {
+                const deletedList = getDeletedProjects();
+                const cleanData = {};
+                for (const [code, p] of Object.entries(json.data)) {
+                    if (deletedList.includes(code)) {
+                        deleteProjectFromRailway(code);
+                    } else {
+                        cleanData[code] = p;
+                    }
+                }
+                projectsData = cleanData;
                 Object.values(projectsData).forEach(normalizeProjectDefaults);
                 try {
                     localStorage.setItem("permpoon_projects_data_v3", JSON.stringify(projectsData));
@@ -6687,22 +6732,28 @@ async function syncWithRailwayBackend() {
 
 function syncProjectToRailway(code, data) {
     if (!code || !data) return;
+    const deletedList = getDeletedProjects();
+    if (deletedList.includes(code)) return; // DO NOT SEND DELETED PROJECT!
     try {
         fetch("/api/projects", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: code, data: data })
+            body: JSON.stringify({ code: code, data: data }),
+            keepalive: true
         }).catch(() => {});
     } catch(e) {}
 }
 
-function deleteProjectFromRailway(code) {
+async function deleteProjectFromRailway(code) {
     if (!code) return;
     try {
-        fetch("/api/projects/" + encodeURIComponent(code), {
-            method: "DELETE"
-        }).catch(() => {});
-    } catch(e) {}
+        await fetch("/api/projects/" + encodeURIComponent(code), {
+            method: "DELETE",
+            keepalive: true
+        });
+    } catch(e) {
+        console.error("Railway delete error:", e);
+    }
 }
 
 function saveToLocalStorage(targetCode) {
@@ -17836,6 +17887,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const isQuoting = (appState.currentView === "quoting-projects-list");
             let code = document.getElementById("new-project-code").value.trim().toUpperCase();
+            if (code) unmarkProjectAsDeleted(code);
             if (!code) {
                 if (isQuoting) {
                     code = "QT-" + Math.floor(100000 + Math.random() * 900000);
@@ -19915,17 +19967,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const projName = proj.name;
-        delete projectsData[code];
 
-        // Save updated list to local storage & cloud (Railway DB & Supabase)
-        saveToLocalStorage();
-        deleteProjectFromSupabase(code);
+        // 1. Mark as permanently deleted (Tombstone) so no sync can ever revive it
+        markProjectAsDeleted(code);
+
+        // 2. Remove from active state and queues immediately
+        delete projectsData[code];
+        const qIdx = syncQueue.indexOf(code);
+        if (qIdx > -1) syncQueue.splice(qIdx, 1);
+        failedProjects.delete(code);
+
+        if (appState.selectedDetailProject === code) {
+            appState.selectedDetailProject = "all";
+            sessionStorage.setItem("permpoon_last_detail_project", "all");
+        }
+        if (appState.selectedCostProject === code) {
+            appState.selectedCostProject = "all";
+        }
+
+        // 3. Save local storage without this project
+        try {
+            localStorage.setItem("permpoon_projects_data_v3", JSON.stringify(projectsData));
+        } catch(e) {}
+
+        // 4. Await deletion on Railway backend PostgreSQL & Supabase
+        updateCloudSyncStatus("syncing");
+        await deleteProjectFromRailway(code);
+        await deleteProjectFromSupabase(code);
+        updateCloudSyncStatus("synced");
 
         if (window.closeEditProjectModal) window.closeEditProjectModal();
-        appState.selectedDetailProject = "all";
-        sessionStorage.setItem("permpoon_last_detail_project", "all");
 
-        showToast(`ลบ${itemType} ${code}: ${projName} ออกจากระบบสำเร็จ!`, "success");
+        showToast(`ลบ${itemType} ${code}: ${projName} ออกจากระบบถาวรเรียบร้อยแล้ว!`, "success");
 
         populateSubnavHospitals();
         const curYear = document.getElementById("subnav-year-filter") ? document.getElementById("subnav-year-filter").value : "all";
