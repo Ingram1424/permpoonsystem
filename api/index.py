@@ -19,16 +19,6 @@ except ImportError:
 
 app = FastAPI(title="Permpoon Management System API")
 
-import urllib.request, sys, socket
-try:
-    with urllib.request.urlopen("https://api.ipify.org", timeout=5) as _resp:
-        _my_ip = _resp.read().decode().strip()
-        print(f"@@@ REAL HOST PUBLIC IP: {_my_ip} @@@", file=sys.stderr, flush=True)
-    _host_ip = socket.gethostbyname("host.docker.internal")
-    print(f"@@@ host.docker.internal: {_host_ip} @@@", file=sys.stderr, flush=True)
-except Exception as _e:
-    print(f"@@@ IP ERROR: {_e} @@@", file=sys.stderr, flush=True)
-
 
 
 
