@@ -19,16 +19,14 @@ except ImportError:
 
 app = FastAPI(title="Permpoon Management System API")
 
-import urllib.request
-@app.on_event("startup")
-async def startup_diag():
-    try:
-        req = urllib.request.Request("https://api.ipify.org", headers={"User-Agent": "curl/8.0"})
-        with urllib.request.urlopen(req, timeout=5) as resp:
-            public_ip = resp.read().decode().strip()
-            print(f"=== [DIAG] OUTBOUND PUBLIC IP: {public_ip} ===")
-    except Exception as e:
-        print(f"=== [DIAG] IP check error: {e} ===")
+import urllib.request, sys
+try:
+    with urllib.request.urlopen("https://api.ipify.org", timeout=5) as _resp:
+        _my_ip = _resp.read().decode().strip()
+        print(f"@@@ REAL HOST PUBLIC IP: {_my_ip} @@@", file=sys.stderr, flush=True)
+except Exception as _e:
+    print(f"@@@ IP ERROR: {_e} @@@", file=sys.stderr, flush=True)
+
 
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
