@@ -3428,7 +3428,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                             <i class="fa-solid fa-images"></i> รูปภาพ / ไฟล์
                         </a>
                         <a href="#" class="subnav-tab-item hide-customer hide-technician hide-tech" data-subtab="cost-tab">
-                            <i class="fa-solid fa-hand-holding-dollar"></i> ค่าใช้จ่ายโครงการ
+                            <i class="fa-solid fa-hand-holding-dollar"></i> Cost Management (ค่าใช้จ่ายโครงการ)
                         </a>
                         <a href="#" class="subnav-tab-item" data-subtab="documents-tab">
                             <i class="fa-solid fa-file-invoice"></i> เอกสารโครงการ
@@ -4591,7 +4591,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                 </div>
 
                                 <!-- Project Access Permissions Management Card -->
-                                <div class="project-permissions-card hide-accounting hide-customer hide-pe hide-technician" style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+                                <div class="project-permissions-card hide-pm hide-accounting hide-customer hide-pe hide-technician" style="background: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 12px;">
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <i class="fa-solid fa-user-shield" style="font-size: 16px; color: var(--primary-blue);"></i>
@@ -9275,8 +9275,8 @@ function renderSubnavGeneralInfo(project) {
     // Render Yearly Comparison Chart (Planned vs Actual progress across years)
     renderSubnavYearlyComparisonChart(project.customer);
 
-    // Render Project Detail Permissions
-    if (appState.currentRole === "pm" || appState.currentRole === "admin") {
+    // Render Project Detail Permissions (Admin only)
+    if (appState.currentRole === "admin") {
         const card = document.querySelector(".project-permissions-card");
         if (card) card.style.display = "block";
         renderProjectPermissions(project);
