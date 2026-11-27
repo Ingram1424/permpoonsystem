@@ -3956,6 +3956,7 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                                 <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 90px;">% กำไร</th>
                                                 <th style="padding: 10px 12px; text-align: left; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 150px;">ผู้รับผิดชอบ (PM)</th>
                                                 <th style="padding: 10px 12px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 110px;">สถานะ</th>
+                                                <th style="padding: 10px 8px; text-align: center; color: #ffffff !important; background-color: var(--navy-dark) !important; font-size: 11.5px; font-weight: 600; width: 85px;">ส่งออก</th>
                                             </tr>
                                         </thead>
                                         <tbody id="project-cost-summary-tbody">
@@ -4061,11 +4062,16 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
 
                                     <!-- Right: Latest Expenses -->
                                     <div class="cost-transactions-panel">
-                                        <div class="panel-header-action">
-                                            <h4 class="panel-subtitle-thai">รายการค่าใช้จ่ายล่าสุด</h4>
-                                            <button class="btn btn-sm btn-outline btn-add-expense-trigger" id="open-expense-modal-btn">
-                                                <i class="fa-solid fa-plus"></i> เพิ่มรายการ
-                                            </button>
+                                        <div class="panel-header-action" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                            <h4 class="panel-subtitle-thai mb-0">รายการค่าใช้จ่ายล่าสุด</h4>
+                                            <div style="display: flex; gap: 6px; align-items: center;">
+                                                <button class="btn btn-sm btn-outline-green hide-customer" id="btn-export-cost-excel-panel" style="font-family: 'Prompt'; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #86efac; color: #15803d; background: #f0fdf4; padding: 5px 10px; border-radius: var(--radius-sm); cursor: pointer;">
+                                                    <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> ส่งออก Excel
+                                                </button>
+                                                <button class="btn btn-sm btn-outline btn-add-expense-trigger" id="open-expense-modal-btn">
+                                                    <i class="fa-solid fa-plus"></i> เพิ่มรายการ
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="table-container">
                                             <table class="transaction-table">
@@ -4530,6 +4536,10 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                         <!-- Export PDF Button -->
                                         <button class="btn btn-sm" id="export-project-pdf-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: none; cursor: pointer; transition: opacity 0.2s;">
                                             <i class="fa-solid fa-file-pdf" style="font-size: 13px;"></i> ส่งออก PDF รายงาน
+                                        </button>
+                                        <!-- Export Cost Excel Button -->
+                                        <button class="btn btn-sm hide-customer" id="export-project-cost-excel-btn-inline" style="height: 36px; padding: 0 14px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; border-radius: 6px; background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; border: none; cursor: pointer; transition: opacity 0.2s;" title="ส่งออกตารางรายการเบิกจ่ายต้นทุนโครงการ (.xlsx)">
+                                            <i class="fa-solid fa-file-excel" style="font-size: 13px;"></i> ส่งออก Excel เบิกจ่าย
                                         </button>
                                     </div>
                                 </div>
@@ -5053,8 +5063,8 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="panel-subtitle-thai mb-0">รายการเบิกจ่ายต้นทุนของโครงการ</h4>
                                         <div style="display: flex; gap: 8px;">
-                                            <button class="btn btn-sm btn-outline-green hide-pe hide-technician hide-tech hide-customer" id="subtab-export-cost-excel-btn" style="font-family: 'Prompt'; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; color: #15803d; border: 1px solid #86efac; background: #f0fdf4; border-radius: 6px; cursor: pointer; padding: 6px 12px; font-weight: 600;">
-                                                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> ส่งออก Excel
+                                            <button class="btn btn-sm btn-outline-green hide-customer" id="subtab-export-cost-excel-btn" style="font-family: 'Prompt'; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px; color: #15803d; border: 1px solid #86efac; background: #f0fdf4; border-radius: 6px; cursor: pointer; padding: 6px 14px; font-weight: 700;">
+                                                <i class="fa-solid fa-file-excel" style="color: #16a34a; font-size: 13px;"></i> ส่งออก Excel
                                             </button>
                                             <button class="btn btn-sm btn-outline-blue hide-pe hide-technician hide-tech hide-customer" id="subtab-open-expense-modal-btn" style="font-family: 'Prompt'; font-size: 11px;">
                                                 <i class="fa-solid fa-plus"></i> บันทึกจ่ายตรง
@@ -13072,6 +13082,11 @@ function renderProjectCostSummaryTable() {
             </td>
             <td style="padding: 10px 12px; font-size: 11.5px; color: var(--text-dark);">${p.manager || "-"}</td>
             <td style="padding: 10px 12px; text-align: center;">${statusBadge}</td>
+            <td style="padding: 10px 8px; text-align: center;">
+                <button type="button" class="btn btn-xs" onclick="event.stopPropagation(); window.exportProjectExpensesExcel('${p.code}')" style="background: #f0fdf4; border: 1px solid #86efac; color: #15803d; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="ส่งออกตาราง Excel">
+                    <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> Excel
+                </button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -17629,16 +17644,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.exportProjectExpensesExcel = function(projectCode) {
         const code = projectCode || appState.selectedDetailProject || appState.selectedCostProject;
-        if (!code || code === "all" || !projectsData[code]) {
+        if (!code || code === "all") {
             showToast("กรุณาเลือกโครงการก่อนส่งออกข้อมูล", "warning");
             return;
         }
-        const proj = projectsData[code];
-        const expenses = proj.expenses || [];
-        if (expenses.length === 0) {
-            showToast("โครงการนี้ยังไม่มีรายการเบิกจ่ายต้นทุน", "warning");
+        let proj = projectsData[code];
+        if (!proj) {
+            proj = Object.values(projectsData).find(p => p.code === code || p.id === code || (p.code && p.code.trim().toLowerCase() === String(code).trim().toLowerCase()));
+        }
+        if (!proj) {
+            showToast("ไม่พบข้อมูลโครงการ", "warning");
             return;
         }
+        const expenses = proj.expenses || [];
 
         const now = new Date();
         const thaiMonths = [
@@ -17773,6 +17791,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    const exportProjectCostExcelBtnInline = document.getElementById("export-project-cost-excel-btn-inline");
+    if (exportProjectCostExcelBtnInline) {
+        exportProjectCostExcelBtnInline.addEventListener("click", function() {
+            window.exportProjectExpensesExcel(appState.selectedDetailProject);
+        });
+    }
+
     const subtabExportCostExcelBtn = document.getElementById("subtab-export-cost-excel-btn");
     if (subtabExportCostExcelBtn) {
         subtabExportCostExcelBtn.addEventListener("click", function() {
@@ -17783,6 +17808,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnExportCostExcel = document.getElementById("btn-export-cost-excel");
     if (btnExportCostExcel) {
         btnExportCostExcel.addEventListener("click", function() {
+            window.exportProjectExpensesExcel(appState.selectedCostProject);
+        });
+    }
+
+    const btnExportCostExcelPanel = document.getElementById("btn-export-cost-excel-panel");
+    if (btnExportCostExcelPanel) {
+        btnExportCostExcelPanel.addEventListener("click", function() {
             window.exportProjectExpensesExcel(appState.selectedCostProject);
         });
     }
