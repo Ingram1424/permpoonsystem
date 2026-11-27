@@ -20,6 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Supabase JS Client for Real-time Cloud Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- SheetJS for Exporting Excel (.xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
         <style>
         .gantt-doc-headers-grid {
             display: grid;
@@ -3990,6 +3992,9 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                         <i class="fa-solid fa-file-circle-exclamation" style="color: #e53e3e;"></i> ยอดโครงการค้างส่งมอบ
                                     </button>
                                 </div>
+                                <button class="btn btn-sm btn-outline-green" id="btn-export-cost-excel" style="font-family: 'Prompt'; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid #86efac; color: #15803d; background: #f0fdf4; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                                    <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> ส่งออก Excel
+                                </button>
                                 <button class="btn btn-sm btn-outline-blue" id="btn-print-cost-report" style="font-family: 'Prompt'; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; border-color: var(--primary-blue); color: var(--primary-blue); background: #ffffff; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#ffffff'">
                                     <i class="fa-solid fa-print"></i> พิมพ์รายงาน PDF
                                 </button>
@@ -5048,6 +5053,9 @@ body.gallery-select-mode .gallery-select-cb-wrapper {
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="panel-subtitle-thai mb-0">รายการเบิกจ่ายต้นทุนของโครงการ</h4>
                                         <div style="display: flex; gap: 8px;">
+                                            <button class="btn btn-sm btn-outline-green hide-pe hide-technician hide-tech hide-customer" id="subtab-export-cost-excel-btn" style="font-family: 'Prompt'; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; color: #15803d; border: 1px solid #86efac; background: #f0fdf4; border-radius: 6px; cursor: pointer; padding: 6px 12px; font-weight: 600;">
+                                                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> ส่งออก Excel
+                                            </button>
                                             <button class="btn btn-sm btn-outline-blue hide-pe hide-technician hide-tech hide-customer" id="subtab-open-expense-modal-btn" style="font-family: 'Prompt'; font-size: 11px;">
                                                 <i class="fa-solid fa-plus"></i> บันทึกจ่ายตรง
                                             </button>
@@ -17616,6 +17624,166 @@ document.addEventListener("DOMContentLoaded", () => {
                 </html>
             `);
             printWindow.document.close();
+        });
+    }
+
+    window.exportProjectExpensesExcel = function(projectCode) {
+        const code = projectCode || appState.selectedDetailProject || appState.selectedCostProject;
+        if (!code || code === "all" || !projectsData[code]) {
+            showToast("กรุณาเลือกโครงการก่อนส่งออกข้อมูล", "warning");
+            return;
+        }
+        const proj = projectsData[code];
+        const expenses = proj.expenses || [];
+        if (expenses.length === 0) {
+            showToast("โครงการนี้ยังไม่มีรายการเบิกจ่ายต้นทุน", "warning");
+            return;
+        }
+
+        const now = new Date();
+        const thaiMonths = [
+            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+        ];
+        const d = now.getDate();
+        const m = thaiMonths[now.getMonth()];
+        const yBuddhist = now.getFullYear() + 543;
+        const hours = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const thaiDateTime = `${d} ${m} ${yBuddhist} เวลา ${hours}:${mins}`;
+
+        const dateFileStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const cleanCode = (proj.code || "PROJECT").replace(/[/\\:*?"<>|]/g, "_");
+
+        let totalAll = 0;
+        let totalApprovedOrDirect = 0;
+        let totalPending = 0;
+
+        expenses.forEach(e => {
+            const amt = Number(e.amount) || 0;
+            totalAll += amt;
+            const st = e.status || "จ่ายตรง";
+            if (st === "รออนุมัติ") {
+                totalPending += amt;
+            } else if (st === "อนุมัติแล้ว" || st === "จ่ายตรง") {
+                totalApprovedOrDirect += amt;
+            }
+        });
+
+        const displayCode = /^\d{8,}/.test(proj.code || "") && !proj.code.startsWith("PO") ? "PO " + proj.code : (proj.code || "-");
+        const projYear = proj.year || now.getFullYear();
+        const estCost = proj.estimatedCost || proj.costBudget || 0;
+
+        // Build spreadsheet rows matching exact layout
+        const rows = [
+            ["รายงานรายการเบิกจ่ายต้นทุนของโครงการ (Project Expense Disbursement Report)"],
+            [],
+            [`รหัสโครงการ: ${displayCode}`, "", "", `ชื่อโครงการ (Project Name): ${proj.name || '-'}`],
+            [`ลูกค้า/โรงพยาบาล: ${proj.customer || '-'}`, "", "", `ปีงบประมาณ (Year):`, projYear],
+            [`มูลค่าสัญญา:`, Number(proj.value) || 0, "", `ต้นทุนงบประมาณ (Estimated Cost):`, Number(estCost) || 0],
+            [`วันที่ออกรายงาน: ${thaiDateTime}`],
+            [],
+            ["ลำดับ", "วันที่ทำรายการ", "รายการค่าใช้จ่าย", "ประเภทต้นทุน", "สถานะ", "จำนวนเงิน (บาท)", "ไฟล์แนบ", "หมายเหตุ / เหตุผลที่ปฏิเสธ"]
+        ];
+
+        expenses.forEach((e, idx) => {
+            const st = e.status || "จ่ายตรง";
+            let reason = "-";
+            if (st === "ปฏิเสธ" && e.rejectReason) {
+                reason = e.rejectReason;
+            } else if (e.remark || e.note) {
+                reason = e.remark || e.note;
+            }
+            rows.push([
+                idx + 1,
+                e.date || "-",
+                e.title || "-",
+                e.type || "-",
+                st,
+                Number(e.amount) || 0,
+                e.file || "-",
+                reason
+            ]);
+        });
+
+        // Summary Rows
+        rows.push([]);
+        rows.push(["", "", "", "รวมรายการทั้งหมด:", `${expenses.length} รายการ`]);
+        rows.push(["", "", "", "ยอดรวมค่าใช้จ่ายทั้งสิ้น:", "", totalAll]);
+        rows.push(["", "", "", "ยอดอนุมัติแล้ว / จ่ายตรง:", "", totalApprovedOrDirect]);
+        rows.push(["", "", "", "ยอดรออนุมัติ (บาท):", "", totalPending]);
+
+        const filename = `รายการเบิกจ่ายต้นทุน_${cleanCode}_${dateFileStr}.xlsx`;
+
+        if (typeof XLSX !== "undefined") {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+
+            ws['!cols'] = [
+                { wch: 8 },  // ลำดับ
+                { wch: 16 }, // วันที่ทำรายการ
+                { wch: 42 }, // รายการค่าใช้จ่าย
+                { wch: 16 }, // ประเภทต้นทุน
+                { wch: 15 }, // สถานะ
+                { wch: 20 }, // จำนวนเงิน (บาท)
+                { wch: 42 }, // ไฟล์แนบ
+                { wch: 32 }  // หมายเหตุ
+            ];
+
+            // Set numeric formats
+            for (let r = 8; r < 8 + expenses.length; r++) {
+                const cellRef = XLSX.utils.encode_cell({ r: r, c: 5 });
+                if (ws[cellRef]) { ws[cellRef].t = 'n'; ws[cellRef].z = '#,##0.00'; }
+            }
+            const b5 = XLSX.utils.encode_cell({ r: 4, c: 1 });
+            if (ws[b5]) { ws[b5].t = 'n'; ws[b5].z = '#,##0.00'; }
+            const e5 = XLSX.utils.encode_cell({ r: 4, c: 4 });
+            if (ws[e5]) { ws[e5].t = 'n'; ws[e5].z = '#,##0.00'; }
+
+            const summaryStart = 8 + expenses.length + 2;
+            for (let r = summaryStart; r < summaryStart + 3; r++) {
+                const cellRef = XLSX.utils.encode_cell({ r: r, c: 5 });
+                if (ws[cellRef]) { ws[cellRef].t = 'n'; ws[cellRef].z = '#,##0.00'; }
+            }
+
+            XLSX.utils.book_append_sheet(wb, ws, "รายการเบิกจ่าย");
+            XLSX.writeFile(wb, filename);
+            showToast(`ส่งออกไฟล์ Excel สำเร็จ: ${filename}`, "success");
+        } else {
+            let csvContent = "\uFEFF";
+            rows.forEach(r => {
+                const line = r.map(cell => {
+                    if (cell === null || cell === undefined) return '""';
+                    const s = String(cell).replace(/"/g, '""');
+                    return `"${s}"`;
+                }).join(",");
+                csvContent += line + "\r\n";
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const csvFilename = `รายการเบิกจ่ายต้นทุน_${cleanCode}_${dateFileStr}.csv`;
+            a.download = csvFilename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`ส่งออกไฟล์สำเร็จ: ${csvFilename}`, "success");
+        }
+    };
+
+    const subtabExportCostExcelBtn = document.getElementById("subtab-export-cost-excel-btn");
+    if (subtabExportCostExcelBtn) {
+        subtabExportCostExcelBtn.addEventListener("click", function() {
+            window.exportProjectExpensesExcel(appState.selectedDetailProject);
+        });
+    }
+
+    const btnExportCostExcel = document.getElementById("btn-export-cost-excel");
+    if (btnExportCostExcel) {
+        btnExportCostExcel.addEventListener("click", function() {
+            window.exportProjectExpensesExcel(appState.selectedCostProject);
         });
     }
 
